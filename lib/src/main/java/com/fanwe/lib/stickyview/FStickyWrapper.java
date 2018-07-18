@@ -40,6 +40,15 @@ public class FStickyWrapper extends FrameLayout
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
+        final View child = getChildAt(0);
+        if (child != null)
+        {
+            final FrameLayout.LayoutParams params = (LayoutParams) child.getLayoutParams();
+            params.leftMargin = 0;
+            params.topMargin = 0;
+            params.rightMargin = 0;
+            params.bottomMargin = 0;
+        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mHeightMeasured = getMeasuredHeight();
     }
