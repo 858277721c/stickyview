@@ -3,6 +3,7 @@ package com.fanwe.lib.stickyview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -52,6 +53,19 @@ public class FStickyLayout extends FrameLayout
         }
     }
 
+    public void findAllSticky()
+    {
+        final View child = getChildAt(0);
+        if (child == null)
+            return;
+
+        final List<FStickyWrapper> listWrapper = getAllWrapper(child);
+        for (FStickyWrapper item : listWrapper)
+        {
+            addSticky(item);
+        }
+    }
+
     @Override
     public void onViewAdded(View child)
     {
@@ -61,6 +75,8 @@ public class FStickyLayout extends FrameLayout
 
         if (child != mStickyContainer)
             addView(mStickyContainer);
+
+        findAllSticky();
     }
 
     @Override
@@ -117,5 +133,28 @@ public class FStickyLayout extends FrameLayout
 
             mStickyContainer.performSticky(item);
         }
+    }
+
+    private static List<FStickyWrapper> getAllWrapper(View view)
+    {
+        final List<FStickyWrapper> list = new ArrayList<>();
+
+        if (view instanceof ViewGroup && !(view instanceof FStickyLayout))
+        {
+            if (view instanceof FStickyWrapper)
+            {
+                list.add((FStickyWrapper) view);
+            } else
+            {
+                final ViewGroup viewGroup = (ViewGroup) view;
+                final int count = viewGroup.getChildCount();
+                for (int i = 0; i < count; i++)
+                {
+                    final View child = viewGroup.getChildAt(i);
+                    list.addAll(getAllWrapper(child));
+                }
+            }
+        }
+        return list;
     }
 }
