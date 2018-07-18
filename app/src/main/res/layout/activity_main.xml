@@ -19,7 +19,6 @@
                 android:text="button" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
-                android:id="@+id/sticky_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -36,7 +35,6 @@
                 android:background="@color/colorAccent" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
-                android:id="@+id/sticky_wrapper_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -47,13 +45,10 @@
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
-
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="2000dp" />
 
         </LinearLayout>
-
     </ScrollView>
-
 </com.fanwe.lib.stickyview.FStickyLayout>

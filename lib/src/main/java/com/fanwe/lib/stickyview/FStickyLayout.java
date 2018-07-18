@@ -75,8 +75,6 @@ public class FStickyLayout extends FrameLayout
 
         if (child != mStickyContainer)
             addView(mStickyContainer);
-
-        findAllSticky();
     }
 
     @Override
