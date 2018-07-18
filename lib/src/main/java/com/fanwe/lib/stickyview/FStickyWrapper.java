@@ -53,37 +53,22 @@ public class FStickyWrapper extends FrameLayout
 
         checkChild(child);
         mSticky = new WeakReference<>(child);
-        restoreHeight();
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
     public void onViewRemoved(View child)
     {
         super.onViewRemoved(child);
-        saveHeight();
+        setHeight(mHeightMeasured);
     }
 
-    private void saveHeight()
+    private void setHeight(int height)
     {
         final ViewGroup.LayoutParams params = getLayoutParams();
         if (params == null)
             return;
 
-        final int height = mHeightMeasured;
-        if (params.height != height)
-        {
-            params.height = height;
-            setLayoutParams(params);
-        }
-    }
-
-    private void restoreHeight()
-    {
-        final ViewGroup.LayoutParams params = getLayoutParams();
-        if (params == null)
-            return;
-
-        final int height = ViewGroup.LayoutParams.WRAP_CONTENT;
         if (params.height != height)
         {
             params.height = height;
