@@ -14,7 +14,7 @@ import java.util.List;
 public class FStickyLayout extends FrameLayout
 {
     private final FStickyContainer mStickyContainer;
-    private final List<FStickyWrapper> mListSticky = new ArrayList<>();
+    private final List<FStickyWrapper> mListWrapper = new ArrayList<>();
 
     public FStickyLayout(Context context, AttributeSet attrs)
     {
@@ -23,16 +23,33 @@ public class FStickyLayout extends FrameLayout
         mStickyContainer.setOrientation(LinearLayout.VERTICAL);
     }
 
-    public void addSticky(FStickyWrapper view)
+    public void addSticky(FStickyWrapper wrapper)
     {
-        if (view == null)
+        if (wrapper == null)
             return;
-        if (view.getChildCount() != 1)
+        if (wrapper.getChildCount() != 1)
             throw new IllegalArgumentException("FStickyWrapper's child not found");
-        if (mListSticky.contains(view))
+        if (mListWrapper.contains(wrapper))
             return;
 
-        mListSticky.add(view);
+        mListWrapper.add(wrapper);
+    }
+
+    public void removeSticky(FStickyWrapper wrapper)
+    {
+        if (wrapper == null)
+            return;
+
+        if (mListWrapper.remove(wrapper))
+        {
+            final View sticky = wrapper.getSticky();
+            final int index = mStickyContainer.indexOfChild(sticky);
+            if (index >= 0)
+            {
+                mStickyContainer.removeViewAt(index);
+                wrapper.addView(sticky);
+            }
+        }
     }
 
     @Override
@@ -77,7 +94,7 @@ public class FStickyLayout extends FrameLayout
         @Override
         public boolean onPreDraw()
         {
-            if (!mListSticky.isEmpty())
+            if (!mListWrapper.isEmpty())
             {
                 mStickyContainer.updateLocation();
                 checkSticky();
@@ -88,7 +105,7 @@ public class FStickyLayout extends FrameLayout
 
     private void checkSticky()
     {
-        final Iterator<FStickyWrapper> it = mListSticky.iterator();
+        final Iterator<FStickyWrapper> it = mListWrapper.iterator();
         while (it.hasNext())
         {
             final FStickyWrapper item = it.next();
