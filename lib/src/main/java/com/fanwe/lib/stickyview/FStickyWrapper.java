@@ -4,11 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import java.lang.ref.WeakReference;
 
-public class FStickyWrapper extends FrameLayout
+public class FStickyWrapper extends ViewGroup
 {
     private final int[] mLocation = new int[2];
     private int mHeightMeasured;
@@ -40,17 +39,56 @@ public class FStickyWrapper extends FrameLayout
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
+        final int widthDefault = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+        final int heightDefault = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+
         final View child = getChildAt(0);
         if (child != null)
         {
-            final FrameLayout.LayoutParams params = (LayoutParams) child.getLayoutParams();
-            params.leftMargin = 0;
-            params.topMargin = 0;
-            params.rightMargin = 0;
-            params.bottomMargin = 0;
+            final ViewGroup.LayoutParams params = child.getLayoutParams();
+            child.measure(getChildMeasureSpec(widthMeasureSpec, 0, params.width),
+                    getChildMeasureSpec(heightMeasureSpec, 0, params.height));
+
+            final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+            final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+            int width = 0;
+            if (widthMode == MeasureSpec.EXACTLY)
+            {
+                width = widthSize;
+            } else
+            {
+                width = Math.max(widthDefault, child.getMeasuredWidth());
+                if (widthMode == MeasureSpec.AT_MOST)
+                    width = Math.min(width, widthSize);
+            }
+
+            final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+            final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+            int height = 0;
+            if (heightMode == MeasureSpec.EXACTLY)
+            {
+                height = heightSize;
+            } else
+            {
+                height = Math.max(heightDefault, child.getMeasuredHeight());
+                if (heightMode == MeasureSpec.AT_MOST)
+                    height = Math.min(height, heightSize);
+            }
+            setMeasuredDimension(width, height);
+        } else
+        {
+            setMeasuredDimension(widthDefault, heightDefault);
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
         mHeightMeasured = getMeasuredHeight();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b)
+    {
+        final View child = getChildAt(0);
+        if (child != null)
+            child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
     }
 
     @Override
