@@ -2,6 +2,7 @@ package com.fanwe.lib.stickyview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -27,7 +28,7 @@ public class FStickyLayout extends FrameLayout
         if (view == null)
             return;
         if (view.getChildCount() != 1)
-            throw new IllegalArgumentException("view must add one child");
+            throw new IllegalArgumentException("FStickyWrapper's child not found");
         if (mListSticky.contains(view))
             return;
 
@@ -35,13 +36,22 @@ public class FStickyLayout extends FrameLayout
     }
 
     @Override
-    protected void onFinishInflate()
+    public void onViewAdded(View child)
     {
-        super.onFinishInflate();
+        super.onViewAdded(child);
         if (getChildCount() > 2)
-            throw new RuntimeException("FStickyWrapper can only add one child");
+            throw new RuntimeException("can not add more child");
 
-        addView(mStickyContainer);
+        if (child != mStickyContainer)
+            addView(mStickyContainer);
+    }
+
+    @Override
+    public void onViewRemoved(View child)
+    {
+        super.onViewRemoved(child);
+        if (child != mStickyContainer)
+            removeView(mStickyContainer);
     }
 
     @Override
