@@ -49,31 +49,12 @@ public class FStickyWrapper extends ViewGroup
             child.measure(getChildMeasureSpec(widthMeasureSpec, 0, params.width),
                     getChildMeasureSpec(heightMeasureSpec, 0, params.height));
 
-            final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-            final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-            int width = 0;
-            if (widthMode == MeasureSpec.EXACTLY)
-            {
-                width = widthSize;
-            } else
-            {
-                width = Math.max(widthDefault, child.getMeasuredWidth());
-                if (widthMode == MeasureSpec.AT_MOST)
-                    width = Math.min(width, widthSize);
-            }
+            final int widthMax = Math.max(widthDefault, child.getMeasuredWidth());
+            final int width = getSizeInternal(widthMax, widthMeasureSpec);
 
-            final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-            final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-            int height = 0;
-            if (heightMode == MeasureSpec.EXACTLY)
-            {
-                height = heightSize;
-            } else
-            {
-                height = Math.max(heightDefault, child.getMeasuredHeight());
-                if (heightMode == MeasureSpec.AT_MOST)
-                    height = Math.min(height, heightSize);
-            }
+            final int heightMax = Math.max(heightDefault, child.getMeasuredHeight());
+            final int height = getSizeInternal(heightMax, heightMeasureSpec);
+
             setMeasuredDimension(width, height);
         } else
         {
@@ -81,6 +62,25 @@ public class FStickyWrapper extends ViewGroup
         }
 
         mHeightMeasured = getMeasuredHeight();
+    }
+
+    private static int getSizeInternal(int maxSize, int measureSpec)
+    {
+        int result = 0;
+
+        final int modeSpec = MeasureSpec.getMode(measureSpec);
+        final int sizeSpec = MeasureSpec.getSize(measureSpec);
+
+        if (modeSpec == MeasureSpec.EXACTLY)
+        {
+            result = sizeSpec;
+        } else
+        {
+            result = maxSize;
+            if (modeSpec == MeasureSpec.AT_MOST)
+                result = Math.min(maxSize, sizeSpec);
+        }
+        return result;
     }
 
     @Override
