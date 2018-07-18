@@ -43,7 +43,7 @@ public class FStickyWrapper extends ViewGroup
         final int heightDefault = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
 
         final View child = getChildAt(0);
-        if (child != null)
+        if (child != null && child.getVisibility() != GONE)
         {
             final ViewGroup.LayoutParams params = child.getLayoutParams();
             child.measure(getChildMeasureSpec(widthMeasureSpec, 0, params.width),
@@ -87,7 +87,7 @@ public class FStickyWrapper extends ViewGroup
     protected void onLayout(boolean changed, int l, int t, int r, int b)
     {
         final View child = getChildAt(0);
-        if (child != null)
+        if (child != null && child.getVisibility() != GONE)
             child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
     }
 
