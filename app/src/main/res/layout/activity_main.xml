@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fanwe.lib.stickyview.FStickyLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sticky_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:text="button" />
+
+            <com.fanwe.lib.stickyview.FStickyWrapper
+                android:id="@+id/sticky_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:text="sticky" />
+
+            </com.fanwe.lib.stickyview.FStickyWrapper>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/colorAccent" />
+
+            <com.fanwe.lib.stickyview.FStickyWrapper
+                android:id="@+id/sticky_wrapper_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:text="sticky" />
+
+            </com.fanwe.lib.stickyview.FStickyWrapper>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="2000dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</com.fanwe.lib.stickyview.FStickyLayout>
