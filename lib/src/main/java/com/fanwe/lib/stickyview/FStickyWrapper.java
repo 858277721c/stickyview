@@ -17,6 +17,7 @@ public class FStickyWrapper extends FrameLayout
     public FStickyWrapper(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        setPadding(0, 0, 0, 0);
     }
 
     View getSticky()
@@ -28,6 +29,12 @@ public class FStickyWrapper extends FrameLayout
     {
         getLocationOnScreen(mLocation);
         return mLocation;
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom)
+    {
+        super.setPadding(0, 0, 0, 0);
     }
 
     @Override
