@@ -1,6 +1,7 @@
 package com.fanwe.lib.stickyview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,22 @@ public class FStickyLayout extends FrameLayout
     private final FStickyContainer mStickyContainer;
     private final List<FStickyWrapper> mListWrapper = new ArrayList<>();
 
+    private final boolean mAutoFind;
+
     public FStickyLayout(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         mStickyContainer = new FStickyContainer(context);
+
+        if (attrs != null)
+        {
+            final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.lib_sticky_sticky_layout);
+            mAutoFind = a.getBoolean(R.styleable.lib_sticky_sticky_layout_autoFind, false);
+            a.recycle();
+        } else
+        {
+            mAutoFind = false;
+        }
     }
 
     public void addSticky(FStickyWrapper wrapper)
@@ -71,7 +84,11 @@ public class FStickyLayout extends FrameLayout
             throw new RuntimeException("can not add more child");
 
         if (child != mStickyContainer)
+        {
             addView(mStickyContainer);
+            if (mAutoFind)
+                findAllSticky();
+        }
     }
 
     @Override
