@@ -39,25 +39,27 @@ public class FStickyWrapper extends ViewGroup
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
-        final View child = getChildAt(0);
-        if (child != null && child.getVisibility() != GONE)
+        int width = getSuggestedMinimumWidth();
+        int height = getSuggestedMinimumHeight();
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++)
         {
+            final View child = getChildAt(i);
+            if (child.getVisibility() == GONE)
+                continue;
+
             final ViewGroup.LayoutParams params = child.getLayoutParams();
             child.measure(getChildMeasureSpec(widthMeasureSpec, 0, params.width),
                     getChildMeasureSpec(heightMeasureSpec, 0, params.height));
 
-            final int widthMax = Math.max(getSuggestedMinimumWidth(), child.getMeasuredWidth());
-            final int width = Utils.getMeasureSize(widthMax, widthMeasureSpec);
-
-            final int heightMax = Math.max(getSuggestedMinimumHeight(), child.getMeasuredHeight());
-            final int height = Utils.getMeasureSize(heightMax, heightMeasureSpec);
-
-            setMeasuredDimension(width, height);
-        } else
-        {
-            setMeasuredDimension(Utils.getMeasureSize(getSuggestedMinimumWidth(), widthMeasureSpec),
-                    Utils.getMeasureSize(getSuggestedMinimumHeight(), heightMeasureSpec));
+            width = Math.max(width, child.getMeasuredWidth());
+            height = Math.max(height, child.getMeasuredHeight());
         }
+
+        width = Utils.getMeasureSize(width, widthMeasureSpec);
+        height = Utils.getMeasureSize(height, heightMeasureSpec);
+        setMeasuredDimension(width, height);
 
         mHeightMeasured = getMeasuredHeight();
     }
@@ -65,9 +67,15 @@ public class FStickyWrapper extends ViewGroup
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b)
     {
-        final View child = getChildAt(0);
-        if (child != null && child.getVisibility() != GONE)
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++)
+        {
+            final View child = getChildAt(i);
+            if (child.getVisibility() == GONE)
+                continue;
+
             child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+        }
     }
 
     @Override
