@@ -47,41 +47,19 @@ public class FStickyWrapper extends ViewGroup
                     getChildMeasureSpec(heightMeasureSpec, 0, params.height));
 
             final int widthMax = Math.max(getSuggestedMinimumWidth(), child.getMeasuredWidth());
-            final int width = getSizeInternal(widthMax, widthMeasureSpec);
+            final int width = Utils.getMeasureSize(widthMax, widthMeasureSpec);
 
             final int heightMax = Math.max(getSuggestedMinimumHeight(), child.getMeasuredHeight());
-            final int height = getSizeInternal(heightMax, heightMeasureSpec);
+            final int height = Utils.getMeasureSize(heightMax, heightMeasureSpec);
 
             setMeasuredDimension(width, height);
         } else
         {
-            setMeasuredDimension(getSizeInternal(getSuggestedMinimumWidth(), widthMeasureSpec),
-                    getSizeInternal(getSuggestedMinimumHeight(), heightMeasureSpec));
+            setMeasuredDimension(Utils.getMeasureSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+                    Utils.getMeasureSize(getSuggestedMinimumHeight(), heightMeasureSpec));
         }
 
         mHeightMeasured = getMeasuredHeight();
-    }
-
-    private static int getSizeInternal(int size, int measureSpec)
-    {
-        int result = 0;
-
-        final int modeSpec = MeasureSpec.getMode(measureSpec);
-        final int sizeSpec = MeasureSpec.getSize(measureSpec);
-
-        switch (modeSpec)
-        {
-            case MeasureSpec.UNSPECIFIED:
-                result = size;
-                break;
-            case MeasureSpec.EXACTLY:
-                result = sizeSpec;
-                break;
-            case MeasureSpec.AT_MOST:
-                result = Math.min(size, sizeSpec);
-                break;
-        }
-        return result;
     }
 
     @Override
