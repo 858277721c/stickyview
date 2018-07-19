@@ -69,10 +69,10 @@ class FStickyContainer extends ViewGroup
     public void onViewAdded(View child)
     {
         super.onViewAdded(child);
-        mIsReadyToMove = false;
-
         if (mIsDebug)
             Log.i(getClass().getSimpleName(), "onViewAdded: " + child + " count:" + getChildCount());
+
+        setReadyToMove(false);
     }
 
     @Override
@@ -95,6 +95,16 @@ class FStickyContainer extends ViewGroup
                     break;
                 }
             }
+        }
+    }
+
+    private void setReadyToMove(boolean readyToMove)
+    {
+        if (mIsReadyToMove != readyToMove)
+        {
+            mIsReadyToMove = readyToMove;
+            if (mIsDebug)
+                Log.e(getClass().getSimpleName(), "setReadyToMove: " + readyToMove + (readyToMove ? (" bounds: " + mMinY + "," + mMaxY) : ""));
         }
     }
 
@@ -134,10 +144,10 @@ class FStickyContainer extends ViewGroup
             mTotalHeight = height;
             mMinY = getChildAt(count - 1).getMeasuredHeight() - mTotalHeight;
             mMaxY = 0;
-            mIsReadyToMove = true;
+            setReadyToMove(true);
         } else
         {
-            mIsReadyToMove = false;
+            setReadyToMove(false);
         }
 
         width = Utils.getMeasureSize(Math.max(width, getSuggestedMinimumWidth()), widthMeasureSpec);
@@ -250,13 +260,14 @@ class FStickyContainer extends ViewGroup
         if (!offset)
             return false;
 
-        if (mIsDebug)
-            Log.i(getClass().getSimpleName(), "offsetTopAndBottom: " + legalDelta);
-
         for (int i = 0; i < count; i++)
         {
             getChildAt(i).offsetTopAndBottom(legalDelta);
         }
+
+        if (mIsDebug)
+            Log.i(getClass().getSimpleName(), "after offsetTopAndBottom: " + getChildAt(0).getTop());
+
         return true;
     }
 
