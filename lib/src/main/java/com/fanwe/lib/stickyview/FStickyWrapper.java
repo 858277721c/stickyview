@@ -66,9 +66,7 @@ public class FStickyWrapper extends ViewGroup
         final View child = getChildAt(0);
         if (child != null && child.getVisibility() != GONE)
         {
-            final ViewGroup.LayoutParams params = child.getLayoutParams();
-            child.measure(getChildMeasureSpec(widthMeasureSpec, 0, params.width),
-                    getChildMeasureSpec(heightMeasureSpec, 0, params.height));
+            measureChild(child, widthMeasureSpec, heightMeasureSpec);
 
             width = Math.max(width, child.getMeasuredWidth());
             height = Math.max(height, child.getMeasuredHeight());

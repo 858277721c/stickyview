@@ -131,9 +131,7 @@ class FStickyContainer extends ViewGroup
             if (child.getVisibility() == GONE)
                 continue;
 
-            final ViewGroup.LayoutParams params = child.getLayoutParams();
-            child.measure(getChildMeasureSpec(widthMeasureSpec, 0, params.width),
-                    getChildMeasureSpec(heightMeasureSpec, 0, params.height));
+            measureChild(child, widthMeasureSpec, heightMeasureSpec);
 
             width = Math.max(width, child.getMeasuredWidth());
             height += child.getMeasuredHeight();
