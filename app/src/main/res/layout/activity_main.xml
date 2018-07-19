@@ -18,7 +18,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/colorAccent" />
+                android:background="@color/colorPrimary" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
                 android:id="@+id/sticky_wrapper"
@@ -28,6 +28,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
+                    android:background="#FF4081"
                     android:text="sticky" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
@@ -35,7 +36,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/colorAccent" />
+                android:background="@color/colorPrimary" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
                 android:id="@+id/sticky_wrapper_1"
@@ -45,6 +46,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
+                    android:background="#00FF00"
                     android:text="sticky1" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
@@ -52,7 +54,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="@color/colorAccent" />
+                android:background="@color/colorPrimary" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
                 android:id="@+id/sticky_wrapper_2"
@@ -62,6 +64,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
+                    android:background="#FFFC66"
                     android:text="sticky2" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
@@ -69,7 +72,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2000dp"
-                android:background="@color/colorAccent"
+                android:background="@color/colorPrimary"
                 android:onClick="onClick" />
 
         </LinearLayout>
