@@ -225,23 +225,23 @@ class FStickyContainer extends ViewGroup
         return mLocation[1] + (bottom ? lastChild.getBottom() : lastChild.getTop());
     }
 
-    private boolean moveViews()
+    private void moveViews()
     {
         if (!mIsReadyToMove)
-            return false;
+            return;
 
         final int count = getChildCount();
         if (count <= 0)
-            return false;
+            return;
 
         final FStickyWrapper target = mTarget;
         if (target == null)
-            return false;
+            return;
 
         target.updateLocation();
         final int delta = target.getLocationDelta();
         if (delta == 0)
-            return false;
+            return;
 
         final View firstChild = getChildAt(0);
         final int legalDelta = getLegalDelta(firstChild.getTop(), mMinY, mMaxY, delta);
@@ -260,26 +260,22 @@ class FStickyContainer extends ViewGroup
                 }
             }
 
-            return false;
+            return;
         }
 
         boolean offset = false;
         if (legalDelta < 0)
-        {
             offset = target.getLocation() < getBoundSticky(false);
-        } else
-        {
+        else
             offset = target.getLocation() > getBoundSticky(false);
-        }
+
         if (!offset)
-            return false;
+            return;
 
         for (int i = 0; i < count; i++)
         {
             getChildAt(i).offsetTopAndBottom(legalDelta);
         }
-
-        return true;
     }
 
     private static void addViewTo(View child, ViewGroup parent)
