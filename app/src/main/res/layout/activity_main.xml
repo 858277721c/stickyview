@@ -15,9 +15,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="50dp"
                 android:background="@color/colorAccent" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
@@ -31,9 +31,9 @@
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
-            <Button
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="50dp"
                 android:background="@color/colorAccent" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
@@ -47,10 +47,27 @@
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
-            <Button
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/colorAccent" />
+
+            <com.fanwe.lib.stickyview.FStickyWrapper
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:text="sticky2" />
+
+            </com.fanwe.lib.stickyview.FStickyWrapper>
+
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="2000dp"
-                android:background="@color/colorAccent" />
+                android:background="@color/colorAccent"
+                android:onClick="onClick" />
 
         </LinearLayout>
     </ScrollView>
