@@ -2,6 +2,8 @@ package com.fanwe.lib.stickyview;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
 
 class FStickyContainer extends LinearLayout
@@ -30,8 +32,7 @@ class FStickyContainer extends LinearLayout
             {
                 if (wrapper.getLocation()[1] > getBoundY(false))
                 {
-                    removeView(child);
-                    wrapper.addView(child);
+                    addViewTo(child, wrapper);
                 }
             }
         } else
@@ -39,8 +40,7 @@ class FStickyContainer extends LinearLayout
             // check sticky
             if (wrapper.getLocation()[1] <= getBoundY(true))
             {
-                wrapper.removeView(child);
-                addView(child);
+                addViewTo(child, this);
             }
         }
     }
@@ -60,5 +60,23 @@ class FStickyContainer extends LinearLayout
         }
 
         return boundY;
+    }
+
+    private static void addViewTo(View child, ViewGroup parent)
+    {
+        final ViewParent childParent = child.getParent();
+        if (childParent == parent)
+            return;
+
+        try
+        {
+            if (childParent instanceof ViewGroup)
+                ((ViewGroup) childParent).removeView(child);
+
+            parent.addView(child);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
