@@ -14,8 +14,6 @@ import java.util.List;
 public class FStickyLayout extends FrameLayout
 {
     private final FStickyContainer mStickyContainer;
-    private final List<FStickyWrapper> mListWrapper = new ArrayList<>();
-
     private final boolean mAutoFind;
 
     public FStickyLayout(Context context, AttributeSet attrs)
@@ -36,31 +34,12 @@ public class FStickyLayout extends FrameLayout
 
     public void addSticky(FStickyWrapper wrapper)
     {
-        if (wrapper == null)
-            return;
-        if (wrapper.getChildCount() != 1)
-            throw new IllegalArgumentException("FStickyWrapper's child not found");
-        if (mListWrapper.contains(wrapper))
-            return;
-
-        mListWrapper.add(wrapper);
+        mStickyContainer.addSticky(wrapper);
     }
 
     public void removeSticky(FStickyWrapper wrapper)
     {
-        if (wrapper == null)
-            return;
-
-        if (mListWrapper.remove(wrapper))
-        {
-            final View sticky = wrapper.getSticky();
-            final int index = mStickyContainer.indexOfChild(sticky);
-            if (index >= 0)
-            {
-                mStickyContainer.removeViewAt(index);
-                wrapper.addView(sticky);
-            }
-        }
+        mStickyContainer.removeSticky(wrapper);
     }
 
     public void findAllSticky()
@@ -122,7 +101,7 @@ public class FStickyLayout extends FrameLayout
         @Override
         public boolean onPreDraw()
         {
-            mStickyContainer.performSticky(mListWrapper);
+            mStickyContainer.performSticky();
             return true;
         }
     };

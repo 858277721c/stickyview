@@ -9,9 +9,14 @@ import java.lang.ref.WeakReference;
 
 public class FStickyWrapper extends ViewGroup
 {
-    private final int[] mLocation = new int[2];
     private int mHeightMeasured;
     private WeakReference<View> mSticky;
+
+    private final int[] mLocation = new int[2];
+
+    private int mCurrentY;
+    private int mLastY = -1;
+    private int mDeltaY;
 
     public FStickyWrapper(Context context, AttributeSet attrs)
     {
@@ -24,10 +29,26 @@ public class FStickyWrapper extends ViewGroup
         return mSticky == null ? null : mSticky.get();
     }
 
-    int[] getLocation()
+    void updateLocation()
     {
         getLocationOnScreen(mLocation);
-        return mLocation;
+        mCurrentY = mLocation[1];
+
+        if (mLastY >= 0)
+            mDeltaY = mCurrentY - mLastY;
+        mLastY = mCurrentY;
+    }
+
+    int getLocation()
+    {
+        return mCurrentY;
+    }
+
+    int getLocationDelta()
+    {
+        final int delta = mDeltaY;
+        mDeltaY = 0;
+        return delta;
     }
 
     @Override

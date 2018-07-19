@@ -5,12 +5,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 class FStickyContainer extends ViewGroup
 {
     private final int[] mLocation = new int[2];
+    private final List<FStickyWrapper> mListWrapper = new ArrayList<>();
+    private FStickyWrapper mTarget;
+
+    private int mTotalHeight;
+    private int mMinY;
+    private int mMaxY;
+    private boolean mIsReadyToMove;
+    private boolean mIsAllChildrenVisible;
 
     public FStickyContainer(Context context)
     {
@@ -19,10 +28,67 @@ class FStickyContainer extends ViewGroup
         setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
+    public void addSticky(FStickyWrapper wrapper)
+    {
+        if (wrapper == null)
+            return;
+        if (wrapper.getChildCount() != 1)
+            throw new IllegalArgumentException("FStickyWrapper's child not found");
+        if (mListWrapper.contains(wrapper))
+            return;
+
+        mListWrapper.add(wrapper);
+    }
+
+    public void removeSticky(FStickyWrapper wrapper)
+    {
+        if (wrapper == null)
+            return;
+
+        if (mListWrapper.remove(wrapper))
+        {
+            final View sticky = wrapper.getSticky();
+            final int index = indexOfChild(sticky);
+            if (index >= 0)
+            {
+                removeViewAt(index);
+                wrapper.addView(sticky);
+            }
+        }
+    }
+
     @Override
     public void setPadding(int left, int top, int right, int bottom)
     {
         super.setPadding(0, 0, 0, 0);
+    }
+
+    @Override
+    public void onViewAdded(View child)
+    {
+        super.onViewAdded(child);
+        mIsReadyToMove = false;
+    }
+
+    @Override
+    public void onViewRemoved(View child)
+    {
+        super.onViewRemoved(child);
+
+        mTarget = null;
+        final int count = getChildCount();
+        if (count > 0)
+        {
+            final View lastChild = getChildAt(count - 1);
+            for (FStickyWrapper item : mListWrapper)
+            {
+                if (item.getSticky() == lastChild)
+                {
+                    mTarget = item;
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -44,6 +110,17 @@ class FStickyContainer extends ViewGroup
 
             width = Math.max(width, child.getMeasuredWidth());
             height += child.getMeasuredHeight();
+        }
+
+        if (count > 0)
+        {
+            mTotalHeight = height;
+            mMinY = getChildAt(count - 1).getMeasuredHeight() - mTotalHeight;
+            mMaxY = 0;
+            mIsReadyToMove = true;
+        } else
+        {
+            mIsReadyToMove = false;
         }
 
         width = Utils.getMeasureSize(Math.max(width, getSuggestedMinimumWidth()), widthMeasureSpec);
@@ -71,49 +148,44 @@ class FStickyContainer extends ViewGroup
         }
     }
 
-    public void performSticky(List<FStickyWrapper> listWrapper)
+    public void performSticky()
     {
-        if (listWrapper == null || listWrapper.isEmpty())
+        if (mListWrapper == null || mListWrapper.isEmpty())
             return;
 
         getLocationOnScreen(mLocation);
 
-        final Iterator<FStickyWrapper> it = listWrapper.iterator();
+        final Iterator<FStickyWrapper> it = mListWrapper.iterator();
         while (it.hasNext())
         {
-            final FStickyWrapper item = it.next();
-            if (item.getSticky() == null)
+            final FStickyWrapper wrapper = it.next();
+            final View sticky = wrapper.getSticky();
+            if (sticky == null)
             {
                 it.remove();
                 continue;
             }
 
-            performStickyInternal(item);
-        }
-    }
-
-    private void performStickyInternal(FStickyWrapper wrapper)
-    {
-        final View child = wrapper.getSticky();
-        if (child.getParent() == this)
-        {
-            // check remove
-            final View lastChild = getChildAt(getChildCount() - 1);
-            if (child == lastChild)
+            if (sticky.getParent() != this)
             {
-                if (wrapper.getLocation()[1] > getBoundY(false))
+                wrapper.updateLocation();
+                if (wrapper.getLocation() <= getBoundY(true))
                 {
-                    addViewTo(child, wrapper);
+                    addViewTo(sticky, this);
+                    mTarget = wrapper;
                 }
             }
-        } else
-        {
-            // check sticky
-            if (wrapper.getLocation()[1] <= getBoundY(true))
-            {
-                addViewTo(child, this);
-            }
         }
+
+        moveViews();
+
+//        if (mIsAllChildrenVisible)
+//        {
+//            if (mTarget.getLocation() > getBoundY(false))
+//            {
+//                addViewTo(mTarget.getSticky(), mTarget);
+//            }
+//        }
     }
 
     private int getBoundY(boolean sticky)
@@ -123,12 +195,48 @@ class FStickyContainer extends ViewGroup
             return mLocation[1];
 
         final View lastChild = getChildAt(count - 1);
-        final int y = mLocation[1] + (sticky ? lastChild.getBottom() : lastChild.getTop());
-        return y;
+        return mLocation[1] + (sticky ? lastChild.getBottom() : lastChild.getTop());
+    }
+
+    private void moveViews()
+    {
+        if (!mIsReadyToMove)
+            return;
+
+        final int count = getChildCount();
+        if (count <= 0)
+            return;
+
+        final FStickyWrapper target = mTarget;
+        if (target == null)
+            return;
+
+        target.updateLocation();
+        final int delta = target.getLocationDelta();
+        if (delta == 0)
+            return;
+
+        final View childFirst = getChildAt(0);
+        final int legalDelta = getLegalDelta(childFirst.getTop(), mMinY, mMaxY, delta);
+        if (legalDelta == 0)
+            return;
+
+        mIsAllChildrenVisible = true;
+        for (int i = 0; i < count; i++)
+        {
+            final View child = getChildAt(i);
+            child.offsetTopAndBottom(legalDelta);
+
+            if (child.getTop() < 0)
+                mIsAllChildrenVisible = false;
+        }
     }
 
     private static void addViewTo(View child, ViewGroup parent)
     {
+        if (child == null)
+            return;
+
         final ViewParent childParent = child.getParent();
         if (childParent == parent)
             return;
@@ -143,5 +251,21 @@ class FStickyContainer extends ViewGroup
         {
             e.printStackTrace();
         }
+    }
+
+    private static int getLegalDelta(int current, int min, int max, int delta)
+    {
+        if (delta == 0)
+            return 0;
+
+        final int future = current + delta;
+        if (future < min)
+        {
+            delta += (min - future);
+        } else if (future > max)
+        {
+            delta += (max - future);
+        }
+        return delta;
     }
 }
