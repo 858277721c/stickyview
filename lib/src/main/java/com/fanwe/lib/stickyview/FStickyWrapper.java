@@ -96,7 +96,6 @@ public class FStickyWrapper extends ViewGroup
         if (getChildCount() > 1)
             throw new RuntimeException("FStickyWrapper can only add one child");
 
-        checkChild(child);
         mSticky = new WeakReference<>(child);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
@@ -118,25 +117,6 @@ public class FStickyWrapper extends ViewGroup
         {
             params.height = height;
             setLayoutParams(params);
-        }
-    }
-
-    private static void checkChild(View view)
-    {
-        if (view instanceof ViewGroup)
-        {
-            if (view instanceof FStickyLayout)
-                throw new RuntimeException("FStickyLayout found");
-            if (view instanceof FStickyWrapper)
-                throw new RuntimeException("FStickyWrapper found");
-
-            final ViewGroup viewGroup = (ViewGroup) view;
-            final int count = viewGroup.getChildCount();
-            for (int i = 0; i < count; i++)
-            {
-                final View child = viewGroup.getChildAt(i);
-                checkChild(child);
-            }
         }
     }
 }
