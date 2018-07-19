@@ -16,6 +16,7 @@ class FStickyContainer extends ViewGroup
     {
         super(context);
         setPadding(0, 0, 0, 0);
+        setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     @Override
