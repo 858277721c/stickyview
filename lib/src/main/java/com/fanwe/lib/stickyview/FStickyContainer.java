@@ -35,7 +35,7 @@ class FStickyContainer extends ViewGroup
         if (wrapper == null)
             return;
         if (wrapper.getChildCount() != 1)
-            throw new IllegalArgumentException("FStickyWrapper's child not found");
+            throw new IllegalArgumentException("FStickyWrapper's child count != 1");
         if (mListWrapper.contains(wrapper))
             return;
 
