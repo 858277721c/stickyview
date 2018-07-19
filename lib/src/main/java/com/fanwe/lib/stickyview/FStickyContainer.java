@@ -1,6 +1,7 @@
 package com.fanwe.lib.stickyview;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -19,6 +20,8 @@ class FStickyContainer extends ViewGroup
     private int mMinY;
     private int mMaxY;
     private boolean mIsReadyToMove;
+
+    private boolean mIsDebug = true;
 
     public FStickyContainer(Context context)
     {
@@ -67,14 +70,19 @@ class FStickyContainer extends ViewGroup
     {
         super.onViewAdded(child);
         mIsReadyToMove = false;
+
+        if (mIsDebug)
+            Log.i(getClass().getSimpleName(), "onViewAdded: " + child + " count:" + getChildCount());
     }
 
     @Override
     public void onViewRemoved(View child)
     {
         super.onViewRemoved(child);
+        if (mIsDebug)
+            Log.i(getClass().getSimpleName(), "onViewRemoved: " + child + " count:" + getChildCount());
 
-        mTarget = null;
+        setTarget(null);
         final int count = getChildCount();
         if (count > 0)
         {
@@ -83,10 +91,20 @@ class FStickyContainer extends ViewGroup
             {
                 if (item.getSticky() == lastChild)
                 {
-                    mTarget = item;
+                    setTarget(item);
                     break;
                 }
             }
+        }
+    }
+
+    private void setTarget(FStickyWrapper target)
+    {
+        if (mTarget != target)
+        {
+            mTarget = target;
+            if (mIsDebug)
+                Log.i(getClass().getSimpleName(), "setTarget: " + target.getSticky());
         }
     }
 
@@ -171,24 +189,21 @@ class FStickyContainer extends ViewGroup
                 if (wrapper.getLocation() <= getBoundSticky(true))
                 {
                     addViewTo(sticky, this);
-                    mTarget = wrapper;
+                    setTarget(wrapper);
                 }
             }
         }
 
-        moveViews();
-
-//        final int count = getChildCount();
-//        if (count > 0)
-//        {
-//            if (getChildAt(0).getTop() >= 0)
-//            {
-//                if (mTarget.getLocation() > getBoundY(false))
-//                {
-//                    addViewTo(mTarget.getSticky(), mTarget);
-//                }
-//            }
-//        }
+        if (moveViews())
+        {
+            if (getChildAt(0).getTop() >= 0)
+            {
+                if (mTarget.getLocation() > getBoundSticky(false))
+                {
+                    addViewTo(mTarget.getSticky(), mTarget);
+                }
+            }
+        }
     }
 
     private int getBoundSticky(boolean bottom)
@@ -201,28 +216,28 @@ class FStickyContainer extends ViewGroup
         return mLocation[1] + (bottom ? lastChild.getBottom() : lastChild.getTop());
     }
 
-    private void moveViews()
+    private boolean moveViews()
     {
         if (!mIsReadyToMove)
-            return;
+            return false;
 
         final int count = getChildCount();
         if (count <= 0)
-            return;
+            return false;
 
         final FStickyWrapper target = mTarget;
         if (target == null)
-            return;
+            return false;
 
         target.updateLocation();
         final int delta = target.getLocationDelta();
         if (delta == 0)
-            return;
+            return false;
 
         final View firstChild = getChildAt(0);
         final int legalDelta = getLegalDelta(firstChild.getTop(), mMinY, mMaxY, delta);
         if (legalDelta == 0)
-            return;
+            return false;
 
         boolean offset = false;
         if (legalDelta < 0)
@@ -232,14 +247,17 @@ class FStickyContainer extends ViewGroup
         {
             offset = target.getLocation() > getBoundSticky(false);
         }
+        if (!offset)
+            return false;
 
-        if (offset)
+        if (mIsDebug)
+            Log.i(getClass().getSimpleName(), "offsetTopAndBottom: " + legalDelta);
+
+        for (int i = 0; i < count; i++)
         {
-            for (int i = 0; i < count; i++)
-            {
-                getChildAt(i).offsetTopAndBottom(legalDelta);
-            }
+            getChildAt(i).offsetTopAndBottom(legalDelta);
         }
+        return true;
     }
 
     private static void addViewTo(View child, ViewGroup parent)
