@@ -21,6 +21,7 @@
                 android:background="@color/colorAccent" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
+                android:id="@+id/sticky_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -37,6 +38,7 @@
                 android:background="@color/colorAccent" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
+                android:id="@+id/sticky_wrapper_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -53,6 +55,7 @@
                 android:background="@color/colorAccent" />
 
             <com.fanwe.lib.stickyview.FStickyWrapper
+                android:id="@+id/sticky_wrapper_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
