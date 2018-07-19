@@ -8,7 +8,6 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class FStickyLayout extends FrameLayout
@@ -106,30 +105,10 @@ public class FStickyLayout extends FrameLayout
         @Override
         public boolean onPreDraw()
         {
-            if (!mListWrapper.isEmpty())
-            {
-                mStickyContainer.updateLocation();
-                checkSticky();
-            }
+            mStickyContainer.performSticky(mListWrapper);
             return true;
         }
     };
-
-    private void checkSticky()
-    {
-        final Iterator<FStickyWrapper> it = mListWrapper.iterator();
-        while (it.hasNext())
-        {
-            final FStickyWrapper item = it.next();
-            if (item.getSticky() == null)
-            {
-                it.remove();
-                continue;
-            }
-
-            mStickyContainer.performSticky(item);
-        }
-    }
 
     private static List<FStickyWrapper> getAllWrapper(View view)
     {

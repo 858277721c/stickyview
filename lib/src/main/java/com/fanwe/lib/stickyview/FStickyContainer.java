@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.LinearLayout;
 
+import java.util.Iterator;
+import java.util.List;
+
 class FStickyContainer extends LinearLayout
 {
     private final int[] mLocation = new int[2];
@@ -16,12 +19,28 @@ class FStickyContainer extends LinearLayout
         setOrientation(VERTICAL);
     }
 
-    public void updateLocation()
+    public void performSticky(List<FStickyWrapper> listWrapper)
     {
+        if (listWrapper == null || listWrapper.isEmpty())
+            return;
+
         getLocationOnScreen(mLocation);
+
+        final Iterator<FStickyWrapper> it = listWrapper.iterator();
+        while (it.hasNext())
+        {
+            final FStickyWrapper item = it.next();
+            if (item.getSticky() == null)
+            {
+                it.remove();
+                continue;
+            }
+
+            performStickyInternal(item);
+        }
     }
 
-    public void performSticky(FStickyWrapper wrapper)
+    private void performStickyInternal(FStickyWrapper wrapper)
     {
         final View child = wrapper.getSticky();
         if (child.getParent() == this)
