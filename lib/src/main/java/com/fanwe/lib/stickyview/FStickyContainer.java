@@ -104,7 +104,7 @@ class FStickyContainer extends ViewGroup
         {
             mIsReadyToMove = readyToMove;
             if (mIsDebug)
-                Log.e(getClass().getSimpleName(), "setReadyToMove: " + readyToMove + (readyToMove ? (" bounds: " + mMinY + "," + mMaxY) : ""));
+                Log.e(getClass().getSimpleName(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMinY + "," + mMaxY + ")") : ""));
         }
     }
 
@@ -114,7 +114,7 @@ class FStickyContainer extends ViewGroup
         {
             mTarget = target;
             if (mIsDebug)
-                Log.i(getClass().getSimpleName(), "setTarget: " + target.getSticky());
+                Log.i(getClass().getSimpleName(), "setTarget: " + (target == null ? "null" : target.getSticky()));
         }
     }
 
@@ -204,16 +204,7 @@ class FStickyContainer extends ViewGroup
             }
         }
 
-        if (moveViews())
-        {
-            if (getChildAt(0).getTop() >= 0)
-            {
-                if (mTarget.getLocation() > getBoundSticky(false))
-                {
-                    addViewTo(mTarget.getSticky(), mTarget);
-                }
-            }
-        }
+        moveViews();
     }
 
     private int getBoundSticky(boolean bottom)
@@ -247,7 +238,22 @@ class FStickyContainer extends ViewGroup
         final View firstChild = getChildAt(0);
         final int legalDelta = getLegalDelta(firstChild.getTop(), mMinY, mMaxY, delta);
         if (legalDelta == 0)
+        {
+            if (delta > 0)
+            {
+                final int firstTop = firstChild.getTop();
+                final int targetLocation = target.getLocation();
+                final int bound = getBoundSticky(false);
+                if (firstTop >= 0 && targetLocation > bound)
+                {
+                    if (mIsDebug)
+                        Log.i(getClass().getSimpleName(), "try remove child: " + target.getSticky());
+                    addViewTo(target.getSticky(), target);
+                }
+            }
+
             return false;
+        }
 
         boolean offset = false;
         if (legalDelta < 0)
@@ -264,9 +270,6 @@ class FStickyContainer extends ViewGroup
         {
             getChildAt(i).offsetTopAndBottom(legalDelta);
         }
-
-        if (mIsDebug)
-            Log.i(getClass().getSimpleName(), "after offsetTopAndBottom: " + getChildAt(0).getTop());
 
         return true;
     }
