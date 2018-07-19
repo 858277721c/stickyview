@@ -47,19 +47,13 @@ class FStickyContainer extends LinearLayout
 
     private int getBoundY(boolean sticky)
     {
-        final int childCount = getChildCount();
-        int boundY = 0;
+        final int count = getChildCount();
+        if (count <= 0)
+            return mLocation[1];
 
-        if (childCount > 0)
-        {
-            final View lastChild = getChildAt(childCount - 1);
-            boundY = mLocation[1] + (sticky ? lastChild.getBottom() : lastChild.getTop());
-        } else
-        {
-            boundY = mLocation[1];
-        }
-
-        return boundY;
+        final View lastChild = getChildAt(count - 1);
+        final int y = mLocation[1] + (sticky ? lastChild.getBottom() : lastChild.getTop());
+        return y;
     }
 
     private static void addViewTo(View child, ViewGroup parent)
