@@ -216,8 +216,8 @@ class FStickyContainer extends ViewGroup
         if (delta == 0)
             return;
 
-        final View childFirst = getChildAt(0);
-        final int legalDelta = getLegalDelta(childFirst.getTop(), mMinY, mMaxY, delta);
+        final View firstChild = getChildAt(0);
+        final int legalDelta = getLegalDelta(firstChild.getTop(), mMinY, mMaxY, delta);
         if (legalDelta == 0)
             return;
 
