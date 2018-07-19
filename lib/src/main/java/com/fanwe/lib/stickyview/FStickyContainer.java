@@ -19,7 +19,6 @@ class FStickyContainer extends ViewGroup
     private int mMinY;
     private int mMaxY;
     private boolean mIsReadyToMove;
-    private boolean mIsAllChildrenVisible;
 
     public FStickyContainer(Context context)
     {
@@ -169,7 +168,7 @@ class FStickyContainer extends ViewGroup
             if (sticky.getParent() != this)
             {
                 wrapper.updateLocation();
-                if (wrapper.getLocation() <= getBoundY(true))
+                if (wrapper.getLocation() <= getBoundSticky(true))
                 {
                     addViewTo(sticky, this);
                     mTarget = wrapper;
@@ -179,23 +178,27 @@ class FStickyContainer extends ViewGroup
 
         moveViews();
 
-//        if (mIsAllChildrenVisible)
+//        final int count = getChildCount();
+//        if (count > 0)
 //        {
-//            if (mTarget.getLocation() > getBoundY(false))
+//            if (getChildAt(0).getTop() >= 0)
 //            {
-//                addViewTo(mTarget.getSticky(), mTarget);
+//                if (mTarget.getLocation() > getBoundY(false))
+//                {
+//                    addViewTo(mTarget.getSticky(), mTarget);
+//                }
 //            }
 //        }
     }
 
-    private int getBoundY(boolean sticky)
+    private int getBoundSticky(boolean bottom)
     {
         final int count = getChildCount();
         if (count <= 0)
             return mLocation[1];
 
         final View lastChild = getChildAt(count - 1);
-        return mLocation[1] + (sticky ? lastChild.getBottom() : lastChild.getTop());
+        return mLocation[1] + (bottom ? lastChild.getBottom() : lastChild.getTop());
     }
 
     private void moveViews()
@@ -221,14 +224,21 @@ class FStickyContainer extends ViewGroup
         if (legalDelta == 0)
             return;
 
-        mIsAllChildrenVisible = true;
-        for (int i = 0; i < count; i++)
+        boolean offset = false;
+        if (legalDelta < 0)
         {
-            final View child = getChildAt(i);
-            child.offsetTopAndBottom(legalDelta);
+            offset = target.getLocation() < getBoundSticky(false);
+        } else
+        {
+            offset = target.getLocation() > getBoundSticky(false);
+        }
 
-            if (child.getTop() < 0)
-                mIsAllChildrenVisible = false;
+        if (offset)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                getChildAt(i).offsetTopAndBottom(legalDelta);
+            }
         }
     }
 
