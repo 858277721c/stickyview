@@ -18,7 +18,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#888888">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,17 +28,19 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/colorAccent" />
+                android:layout_height="100dp" />
 
             <!-- 包裹要Sticky的内容 -->
+
             <com.fanwe.lib.stickyview.FStickyWrapper
+                android:id="@+id/sticky_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="50dp"
+                    android:background="@color/colorAccent"
                     android:text="sticky" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
@@ -45,7 +48,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2000dp"
-                android:background="@color/colorAccent" />
+                android:background="@color/colorPrimary"
+                android:onClick="onClick" />
 
         </LinearLayout>
     </ScrollView>
