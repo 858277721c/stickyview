@@ -3,6 +3,9 @@
 # Gradle
 [![](https://jitpack.io/v/zj565061763/stickyview.svg)](https://jitpack.io/#zj565061763/stickyview)
 
+# 简单效果
+![](https://raw.githubusercontent.com/zj565061763/stickyview/master/screenshot/stickyview.gif)
+
 # 简单使用
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
