@@ -4,19 +4,70 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.LinearLayout;
 
 import java.util.Iterator;
 import java.util.List;
 
-class FStickyContainer extends LinearLayout
+class FStickyContainer extends ViewGroup
 {
     private final int[] mLocation = new int[2];
 
     public FStickyContainer(Context context)
     {
         super(context);
-        setOrientation(VERTICAL);
+        setPadding(0, 0, 0, 0);
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom)
+    {
+        super.setPadding(0, 0, 0, 0);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        int width = 0;
+        int height = 0;
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++)
+        {
+            final View child = getChildAt(i);
+            if (child.getVisibility() == GONE)
+                continue;
+
+            final ViewGroup.LayoutParams params = child.getLayoutParams();
+            child.measure(getChildMeasureSpec(widthMeasureSpec, 0, params.width),
+                    getChildMeasureSpec(heightMeasureSpec, 0, params.height));
+
+            width = Math.max(width, child.getMeasuredWidth());
+            height += child.getMeasuredHeight();
+        }
+
+        width = Utils.getMeasureSize(Math.max(width, getSuggestedMinimumWidth()), widthMeasureSpec);
+        height = Utils.getMeasureSize(Math.max(height, getSuggestedMinimumHeight()), heightMeasureSpec);
+        setMeasuredDimension(width, height);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b)
+    {
+        int top = 0;
+
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++)
+        {
+            final View child = getChildAt(i);
+            if (child.getVisibility() == GONE)
+                continue;
+
+            if (i == 0)
+                top = child.getTop();
+
+            child.layout(0, top, child.getMeasuredWidth(), top + child.getMeasuredHeight());
+            top = child.getBottom();
+        }
     }
 
     public void performSticky(List<FStickyWrapper> listWrapper)
