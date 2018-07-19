@@ -32,16 +32,39 @@ public class FStickyLayout extends FrameLayout
         }
     }
 
+    /**
+     * 设置调试模式，日志tag:{@link FStickyContainer#getDebugTag()}
+     *
+     * @param debug
+     */
+    public void setDebug(boolean debug)
+    {
+        mStickyContainer.setDebug(debug);
+    }
+
+    /**
+     * 添加Sticky
+     *
+     * @param wrapper
+     */
     public void addSticky(FStickyWrapper wrapper)
     {
         mStickyContainer.addSticky(wrapper);
     }
 
+    /**
+     * 移除Sticky
+     *
+     * @param wrapper
+     */
     public void removeSticky(FStickyWrapper wrapper)
     {
         mStickyContainer.removeSticky(wrapper);
     }
 
+    /**
+     * 添加当前对象下的所有Sticky
+     */
     public void findAllSticky()
     {
         final View child = getChildAt(0);

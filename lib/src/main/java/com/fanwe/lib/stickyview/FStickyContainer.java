@@ -21,13 +21,23 @@ class FStickyContainer extends ViewGroup
     private int mMaxY;
     private boolean mIsReadyToMove;
 
-    private boolean mIsDebug = true;
+    private boolean mIsDebug;
 
     public FStickyContainer(Context context)
     {
         super(context);
         setPadding(0, 0, 0, 0);
         setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    }
+
+    public void setDebug(boolean debug)
+    {
+        mIsDebug = debug;
+    }
+
+    private String getDebugTag()
+    {
+        return "FSticky";
     }
 
     public void addSticky(FStickyWrapper wrapper)
@@ -70,7 +80,7 @@ class FStickyContainer extends ViewGroup
     {
         super.onViewAdded(child);
         if (mIsDebug)
-            Log.i(getClass().getSimpleName(), "onViewAdded: " + child + " count:" + getChildCount());
+            Log.i(getDebugTag(), "onViewAdded: " + child + " count:" + getChildCount());
 
         setReadyToMove(false);
     }
@@ -80,7 +90,7 @@ class FStickyContainer extends ViewGroup
     {
         super.onViewRemoved(child);
         if (mIsDebug)
-            Log.i(getClass().getSimpleName(), "onViewRemoved: " + child + " count:" + getChildCount());
+            Log.i(getDebugTag(), "onViewRemoved: " + child + " count:" + getChildCount());
 
         setTarget(null);
         final int count = getChildCount();
@@ -104,7 +114,7 @@ class FStickyContainer extends ViewGroup
         {
             mIsReadyToMove = readyToMove;
             if (mIsDebug)
-                Log.e(getClass().getSimpleName(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMinY + "," + mMaxY + ")") : ""));
+                Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMinY + "," + mMaxY + ")") : ""));
         }
     }
 
@@ -114,7 +124,7 @@ class FStickyContainer extends ViewGroup
         {
             mTarget = target;
             if (mIsDebug)
-                Log.i(getClass().getSimpleName(), "setTarget: " + (target == null ? "null" : target.getSticky()));
+                Log.i(getDebugTag(), "setTarget: " + (target == null ? "null" : target.getSticky()));
         }
     }
 
@@ -245,7 +255,7 @@ class FStickyContainer extends ViewGroup
                 if (firstTop >= 0 && targetLocation > bound)
                 {
                     if (mIsDebug)
-                        Log.i(getClass().getSimpleName(), "try remove child: " + target.getSticky());
+                        Log.i(getDebugTag(), "try remove child: " + target.getSticky());
                     addViewTo(target.getSticky(), target);
                 }
             }
