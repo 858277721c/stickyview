@@ -11,6 +11,7 @@ class FStickyContainer extends LinearLayout
     public FStickyContainer(Context context)
     {
         super(context);
+        setOrientation(VERTICAL);
     }
 
     public void updateLocation()

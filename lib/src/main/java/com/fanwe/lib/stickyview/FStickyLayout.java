@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +20,6 @@ public class FStickyLayout extends FrameLayout
     {
         super(context, attrs);
         mStickyContainer = new FStickyContainer(context);
-        mStickyContainer.setOrientation(LinearLayout.VERTICAL);
     }
 
     public void addSticky(FStickyWrapper wrapper)
