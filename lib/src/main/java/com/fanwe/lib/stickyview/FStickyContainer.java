@@ -81,7 +81,6 @@ class FStickyContainer extends ViewGroup
         super.onViewAdded(child);
         if (mIsDebug)
             Log.i(getDebugTag(), "onViewAdded: " + child + " count:" + getChildCount());
-
         setReadyToMove(false);
     }
 
@@ -91,6 +90,7 @@ class FStickyContainer extends ViewGroup
         super.onViewRemoved(child);
         if (mIsDebug)
             Log.i(getDebugTag(), "onViewRemoved: " + child + " count:" + getChildCount());
+        setReadyToMove(false);
 
         FStickyWrapper target = null;
 
@@ -113,12 +113,9 @@ class FStickyContainer extends ViewGroup
 
     private void setReadyToMove(boolean readyToMove)
     {
-        if (mIsReadyToMove != readyToMove)
-        {
-            mIsReadyToMove = readyToMove;
-            if (mIsDebug)
-                Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMinY + "," + mMaxY + ")") : ""));
-        }
+        mIsReadyToMove = readyToMove;
+        if (mIsDebug)
+            Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMinY + "," + mMaxY + ")") : ""));
     }
 
     private void setTarget(FStickyWrapper target)
@@ -156,9 +153,6 @@ class FStickyContainer extends ViewGroup
             mMinY = getChildAt(count - 1).getMeasuredHeight() - mTotalHeight;
             mMaxY = 0;
             setReadyToMove(true);
-        } else
-        {
-            setReadyToMove(false);
         }
 
         width = Utils.getMeasureSize(Math.max(width, getSuggestedMinimumWidth()), widthMeasureSpec);
