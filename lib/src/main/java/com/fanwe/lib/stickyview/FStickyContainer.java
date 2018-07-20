@@ -244,6 +244,7 @@ class FStickyContainer extends ViewGroup
         final int legalDelta = getLegalDelta(firstChild.getTop(), mMinY, mMaxY, delta);
         if (legalDelta == 0)
         {
+            // (legalDelta == 0) 已经不能拖动，检查是否需要移除Sticky
             if (delta > 0)
             {
                 final int firstTop = firstChild.getTop();
