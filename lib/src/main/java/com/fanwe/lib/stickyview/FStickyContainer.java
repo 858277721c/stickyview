@@ -92,7 +92,8 @@ class FStickyContainer extends ViewGroup
         if (mIsDebug)
             Log.i(getDebugTag(), "onViewRemoved: " + child + " count:" + getChildCount());
 
-        setTarget(null);
+        FStickyWrapper target = null;
+
         final int count = getChildCount();
         if (count > 0)
         {
@@ -101,11 +102,13 @@ class FStickyContainer extends ViewGroup
             {
                 if (item.getSticky() == lastChild)
                 {
-                    setTarget(item);
+                    target = item;
                     break;
                 }
             }
         }
+
+        setTarget(target);
     }
 
     private void setReadyToMove(boolean readyToMove)

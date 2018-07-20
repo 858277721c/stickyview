@@ -36,6 +36,7 @@ public class FStickyWrapper extends ViewGroup
 
         if (mLastY >= 0)
             mDeltaY = mCurrentY - mLastY;
+
         mLastY = mCurrentY;
     }
 
