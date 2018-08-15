@@ -20,6 +20,7 @@ public class FStickyLayout extends FrameLayout
     {
         super(context, attrs);
         mStickyContainer = new FStickyContainer(context);
+        mStickyContainer.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         if (attrs != null)
         {

@@ -27,7 +27,6 @@ class FStickyContainer extends ViewGroup
     {
         super(context);
         setPadding(0, 0, 0, 0);
-        setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
     public void setDebug(boolean debug)
@@ -44,8 +43,6 @@ class FStickyContainer extends ViewGroup
     {
         if (wrapper == null)
             return;
-        if (wrapper.getChildCount() != 1)
-            throw new IllegalArgumentException("FStickyWrapper's child count != 1");
         if (mListWrapper.contains(wrapper))
             return;
 
@@ -73,6 +70,17 @@ class FStickyContainer extends ViewGroup
     public void setPadding(int left, int top, int right, int bottom)
     {
         super.setPadding(0, 0, 0, 0);
+    }
+
+    @Override
+    public void setLayoutParams(LayoutParams params)
+    {
+        if (params != null)
+        {
+            params.width = LayoutParams.MATCH_PARENT;
+            params.height = LayoutParams.MATCH_PARENT;
+        }
+        super.setLayoutParams(params);
     }
 
     @Override
