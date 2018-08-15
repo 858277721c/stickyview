@@ -163,8 +163,8 @@ class FStickyContainer extends ViewGroup
             setReadyToMove(true);
         }
 
-        width = Utils.getMeasureSize(Math.max(width, getSuggestedMinimumWidth()), widthMeasureSpec);
-        height = Utils.getMeasureSize(Math.max(height, getSuggestedMinimumHeight()), heightMeasureSpec);
+        width = Utils.getMeasureSize(width, widthMeasureSpec);
+        height = Utils.getMeasureSize(height, heightMeasureSpec);
         setMeasuredDimension(width, height);
     }
 
