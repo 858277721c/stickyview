@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.act_main);
     }
 
     @Override
@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             case R.id.btn_scrollview:
                 startActivity(new Intent(this, ScrollViewActivity.class));
+                break;
+            case R.id.btn_recyclerview:
+                startActivity(new Intent(this, RecyclerViewActivity.class));
                 break;
         }
     }
