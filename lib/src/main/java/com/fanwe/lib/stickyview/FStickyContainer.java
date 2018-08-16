@@ -16,9 +16,7 @@ class FStickyContainer extends ViewGroup
     private final List<FStickyWrapper> mListWrapper = new ArrayList<>();
     private FStickyWrapper mTarget;
 
-    private int mTotalHeight;
-    private int mMinY;
-    private int mMaxY;
+    private int mMaxYForTargetSticky;
     private boolean mIsReadyToMove;
 
     private boolean mIsDebug;
@@ -123,7 +121,7 @@ class FStickyContainer extends ViewGroup
     {
         mIsReadyToMove = readyToMove;
         if (mIsDebug)
-            Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMinY + "," + mMaxY + ")") : ""));
+            Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMaxYForTargetSticky + ")") : ""));
     }
 
     private void setTarget(FStickyWrapper target)
@@ -155,11 +153,17 @@ class FStickyContainer extends ViewGroup
             height += child.getMeasuredHeight();
         }
 
-        if (count > 0)
+        if (mTarget != null)
         {
-            mTotalHeight = height;
-            mMinY = getChildAt(count - 1).getMeasuredHeight() - mTotalHeight;
-            mMaxY = 0;
+            final View preLastChild = getChildAt(count - 2);
+            if (preLastChild != null)
+            {
+                mMaxYForTargetSticky = preLastChild.getMeasuredHeight();
+            } else
+            {
+                mMaxYForTargetSticky = 0;
+            }
+
             setReadyToMove(true);
         }
 
@@ -235,12 +239,12 @@ class FStickyContainer extends ViewGroup
         if (!mIsReadyToMove)
             return;
 
-        final int count = getChildCount();
-        if (count <= 0)
-            return;
-
         final FStickyWrapper target = mTarget;
         if (target == null)
+            return;
+
+        final View targetSticky = target.getSticky();
+        if (targetSticky == null)
             return;
 
         target.updateLocation();
@@ -248,21 +252,19 @@ class FStickyContainer extends ViewGroup
         if (delta == 0)
             return;
 
-        final View firstChild = getChildAt(0);
-        final int legalDelta = getLegalDelta(firstChild.getTop(), mMinY, mMaxY, delta);
+        final int legalDelta = getLegalDelta(targetSticky.getTop(), 0, mMaxYForTargetSticky, delta);
         if (legalDelta == 0)
         {
-            // (legalDelta == 0) 已经不能拖动，检查是否需要移除Sticky
+            // 已经不能拖动，检查是否需要移除Sticky
             if (delta > 0)
             {
-                final int firstTop = firstChild.getTop();
                 final int targetLocation = target.getLocation();
                 final int bound = getBoundSticky(false);
-                if (firstTop >= 0 && targetLocation > bound)
+                if (targetLocation > bound)
                 {
                     if (mIsDebug)
-                        Log.i(getDebugTag(), "try remove child: " + target.getSticky());
-                    addViewTo(target.getSticky(), target);
+                        Log.i(getDebugTag(), "try remove child: " + targetSticky);
+                    addViewTo(targetSticky, target);
                 }
             }
 
