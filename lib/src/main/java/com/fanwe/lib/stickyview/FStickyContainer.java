@@ -121,7 +121,7 @@ class FStickyContainer extends ViewGroup
     {
         mIsReadyToMove = readyToMove;
         if (mIsDebug)
-            Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMaxYForTargetSticky + ")") : ""));
+            Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (maxY:" + mMaxYForTargetSticky + ")") : ""));
     }
 
     private void setTarget(FStickyWrapper target)
