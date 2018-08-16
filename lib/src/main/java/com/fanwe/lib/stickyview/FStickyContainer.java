@@ -275,12 +275,12 @@ class FStickyContainer extends ViewGroup
         else
             offset = target.getLocation() > getBoundSticky(false);
 
-        if (!offset)
-            return;
-
-        for (int i = 0; i < count; i++)
+        if (offset)
         {
-            getChildAt(i).offsetTopAndBottom(legalDelta);
+            for (int i = 0; i < count; i++)
+            {
+                getChildAt(i).offsetTopAndBottom(legalDelta);
+            }
         }
     }
 
