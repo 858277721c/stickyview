@@ -189,8 +189,13 @@ class FStickyContainer extends ViewGroup
             if (sticky.getParent() != this)
             {
                 item.updateLocation();
-                if (item.getLocation() <= getBoundSticky(true))
+                final int location = item.getLocation();
+                final int bound = getBoundSticky(true);
+                if (location <= bound)
                 {
+                    if (mIsDebug)
+                        Log.i(getDebugTag(), "try add sticky:" + location + "," + bound + " " + sticky);
+
                     post(new Runnable()
                     {
                         @Override
@@ -241,17 +246,18 @@ class FStickyContainer extends ViewGroup
             // 已经不能拖动，检查是否需要移除Sticky
             if (delta > 0)
             {
-                final int targetLocation = target.getLocation();
+                final int location = target.getLocation();
                 final int bound = getBoundSticky(false);
-                if (targetLocation > bound)
+                if (location > bound)
                 {
+                    if (mIsDebug)
+                        Log.i(getDebugTag(), "try remove child:" + location + "," + bound + " " + targetSticky);
+
                     post(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            if (mIsDebug)
-                                Log.i(getDebugTag(), "try remove child: " + targetSticky);
                             addViewTo(targetSticky, target);
                         }
                     });
