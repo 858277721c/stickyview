@@ -266,9 +266,16 @@ class FStickyContainer extends ViewGroup
                 final int bound = getBoundSticky(false);
                 if (targetLocation > bound)
                 {
-                    if (mIsDebug)
-                        Log.i(getDebugTag(), "try remove child: " + targetSticky);
-                    addViewTo(targetSticky, target);
+                    post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            if (mIsDebug)
+                                Log.i(getDebugTag(), "try remove child: " + targetSticky);
+                            addViewTo(targetSticky, target);
+                        }
+                    });
                 }
             }
 
