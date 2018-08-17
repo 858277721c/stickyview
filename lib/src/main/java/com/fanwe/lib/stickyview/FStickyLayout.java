@@ -50,7 +50,7 @@ public class FStickyLayout extends FrameLayout
      */
     public void addSticky(FStickyWrapper wrapper)
     {
-        mStickyContainer.addSticky(wrapper);
+        mStickyContainer.addStickyWrapper(wrapper);
     }
 
     /**
@@ -60,7 +60,7 @@ public class FStickyLayout extends FrameLayout
      */
     public void removeSticky(FStickyWrapper wrapper)
     {
-        mStickyContainer.removeSticky(wrapper);
+        mStickyContainer.removeStickyWrapper(wrapper);
     }
 
     /**

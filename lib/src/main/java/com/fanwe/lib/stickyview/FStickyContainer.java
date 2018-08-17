@@ -37,7 +37,7 @@ class FStickyContainer extends ViewGroup
         return "FSticky";
     }
 
-    public void addSticky(FStickyWrapper wrapper)
+    public void addStickyWrapper(FStickyWrapper wrapper)
     {
         if (wrapper == null)
             return;
@@ -47,7 +47,7 @@ class FStickyContainer extends ViewGroup
         mListWrapper.add(wrapper);
     }
 
-    public void removeSticky(FStickyWrapper wrapper)
+    public void removeStickyWrapper(FStickyWrapper wrapper)
     {
         if (wrapper == null)
             return;
