@@ -205,10 +205,7 @@ class FStickyContainer extends ViewGroup
             final FStickyWrapper wrapper = it.next();
             final View sticky = wrapper.getSticky();
             if (sticky == null)
-            {
-                it.remove();
                 continue;
-            }
 
             if (sticky.getParent() != this)
             {
