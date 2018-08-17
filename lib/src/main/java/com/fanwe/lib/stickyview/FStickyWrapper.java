@@ -52,6 +52,15 @@ public class FStickyWrapper extends ViewGroup
         return delta;
     }
 
+    public boolean isSticked()
+    {
+        final View sticky = getSticky();
+        if (sticky == null)
+            return false;
+
+        return sticky.getParent() instanceof FStickyContainer;
+    }
+
     @Override
     public void setPadding(int left, int top, int right, int bottom)
     {

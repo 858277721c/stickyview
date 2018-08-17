@@ -7,14 +7,18 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 class FStickyContainer extends ViewGroup
 {
     private final int[] mLocation = new int[2];
     private final List<FStickyWrapper> mListWrapper = new ArrayList<>();
+
     private FStickyWrapper mTarget;
+    private final Map<View, FStickyWrapper> mMapSticky = new HashMap<>();
 
     private int mMaxYForTargetSticky;
     private boolean mIsReadyToMove;
@@ -24,7 +28,6 @@ class FStickyContainer extends ViewGroup
     public FStickyContainer(Context context)
     {
         super(context);
-        setPadding(0, 0, 0, 0);
     }
 
     public void setDebug(boolean debug)
@@ -65,28 +68,12 @@ class FStickyContainer extends ViewGroup
     }
 
     @Override
-    public void setPadding(int left, int top, int right, int bottom)
-    {
-        super.setPadding(0, 0, 0, 0);
-    }
-
-    @Override
-    public void setLayoutParams(LayoutParams params)
-    {
-        if (params != null)
-        {
-            params.width = LayoutParams.MATCH_PARENT;
-            params.height = LayoutParams.MATCH_PARENT;
-        }
-        super.setLayoutParams(params);
-    }
-
-    @Override
     public void onViewAdded(View child)
     {
         super.onViewAdded(child);
         if (mIsDebug)
             Log.i(getDebugTag(), "onViewAdded: " + child + " count:" + getChildCount());
+
         setReadyToMove(false);
     }
 
@@ -96,23 +83,12 @@ class FStickyContainer extends ViewGroup
         super.onViewRemoved(child);
         if (mIsDebug)
             Log.i(getDebugTag(), "onViewRemoved: " + child + " count:" + getChildCount());
+
         setReadyToMove(false);
+        mMapSticky.remove(child);
 
-        FStickyWrapper target = null;
-
-        final int count = getChildCount();
-        if (count > 0)
-        {
-            final View lastChild = getChildAt(count - 1);
-            for (FStickyWrapper item : mListWrapper)
-            {
-                if (item.getSticky() == lastChild)
-                {
-                    target = item;
-                    break;
-                }
-            }
-        }
+        final View lastChild = getChildAt(getChildCount() - 1);
+        final FStickyWrapper target = lastChild == null ? null : mMapSticky.get(lastChild);
 
         setTarget(target);
     }
@@ -129,6 +105,12 @@ class FStickyContainer extends ViewGroup
         if (mTarget != target)
         {
             mTarget = target;
+
+            if (target != null)
+            {
+                mMapSticky.put(target.getSticky(), target);
+            }
+
             if (mIsDebug)
                 Log.i(getDebugTag(), "setTarget: " + (target == null ? "null" : target.getSticky()));
         }
