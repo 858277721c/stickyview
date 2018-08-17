@@ -8,7 +8,6 @@ import android.view.ViewParent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -181,18 +180,16 @@ class FStickyContainer extends ViewGroup
 
         getLocationOnScreen(mLocation);
 
-        final Iterator<FStickyWrapper> it = mListWrapper.iterator();
-        while (it.hasNext())
+        for (final FStickyWrapper item : mListWrapper)
         {
-            final FStickyWrapper wrapper = it.next();
-            final View sticky = wrapper.getSticky();
+            final View sticky = item.getSticky();
             if (sticky == null)
                 continue;
 
             if (sticky.getParent() != this)
             {
-                wrapper.updateLocation();
-                if (wrapper.getLocation() <= getBoundSticky(true))
+                item.updateLocation();
+                if (item.getLocation() <= getBoundSticky(true))
                 {
                     post(new Runnable()
                     {
@@ -200,7 +197,7 @@ class FStickyContainer extends ViewGroup
                         public void run()
                         {
                             addViewTo(sticky, FStickyContainer.this);
-                            setTarget(wrapper);
+                            setTarget(item);
                         }
                     });
                 }
