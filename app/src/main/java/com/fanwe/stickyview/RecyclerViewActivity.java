@@ -60,7 +60,7 @@ public class RecyclerViewActivity extends AppCompatActivity
             btn.setText(model.toString());
             btn_sticky.setText(model.toString());
 
-            if (position == 3)
+            if (position == 1)
                 mStickyLayout.addSticky(sticky_wrapper);
         }
     };
