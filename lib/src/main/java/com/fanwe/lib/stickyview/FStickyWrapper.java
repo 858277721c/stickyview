@@ -24,7 +24,7 @@ public class FStickyWrapper extends ViewGroup
         setPadding(0, 0, 0, 0);
     }
 
-    View getSticky()
+    public View getSticky()
     {
         return mSticky == null ? null : mSticky.get();
     }
