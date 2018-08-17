@@ -215,8 +215,15 @@ class FStickyContainer extends ViewGroup
                 wrapper.updateLocation();
                 if (wrapper.getLocation() <= getBoundSticky(true))
                 {
-                    addViewTo(sticky, this);
-                    setTarget(wrapper);
+                    post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            addViewTo(sticky, FStickyContainer.this);
+                            setTarget(wrapper);
+                        }
+                    });
                 }
             }
         }
