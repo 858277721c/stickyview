@@ -140,11 +140,11 @@ class FStickyContainer extends ViewGroup
             if (preLastChild != null)
             {
                 mMaxYForTargetSticky = preLastChild.getMeasuredHeight();
-                setReadyToMove(true);
             } else
             {
                 mMaxYForTargetSticky = 0;
             }
+            setReadyToMove(true);
         }
 
         width = Utils.getMeasureSize(width, widthMeasureSpec);
