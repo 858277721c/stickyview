@@ -234,8 +234,7 @@ class FStickyContainer extends ViewGroup
         if (targetSticky == null)
             return;
 
-        target.updateLocation();
-        final int delta = target.getLocationDelta();
+        final int delta = target.updateLocation();
         if (delta == 0)
             return;
 

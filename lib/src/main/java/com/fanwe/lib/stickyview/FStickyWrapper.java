@@ -13,10 +13,7 @@ public class FStickyWrapper extends ViewGroup
     private WeakReference<View> mSticky;
 
     private final int[] mLocation = new int[2];
-
-    private int mCurrentY;
     private int mLastY = -1;
-    private int mDeltaY;
 
     public FStickyWrapper(Context context, AttributeSet attrs)
     {
@@ -29,27 +26,26 @@ public class FStickyWrapper extends ViewGroup
         return mSticky == null ? null : mSticky.get();
     }
 
-    void updateLocation()
+    /**
+     * 更新位置，并返回此次位置和上一次位置之间的偏移量
+     *
+     * @return
+     */
+    int updateLocation()
     {
         getLocationOnScreen(mLocation);
-        mCurrentY = mLocation[1];
 
+        int delta = 0;
         if (mLastY >= 0)
-            mDeltaY = mCurrentY - mLastY;
+            delta = mLocation[1] - mLastY;
 
-        mLastY = mCurrentY;
+        mLastY = mLocation[1];
+        return delta;
     }
 
     int getLocation()
     {
-        return mCurrentY;
-    }
-
-    int getLocationDelta()
-    {
-        final int delta = mDeltaY;
-        mDeltaY = 0;
-        return delta;
+        return mLocation[1];
     }
 
     @Override
