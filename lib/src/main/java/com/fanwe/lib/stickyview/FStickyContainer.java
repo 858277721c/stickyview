@@ -185,6 +185,9 @@ class FStickyContainer extends ViewGroup
         {
             final View child = getChildAt(0);
             child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+
+            if (mIsDebug)
+                Log.i(getDebugTag(), "onLayout:" + child.getTop() + "," + child.getBottom() + " index:" + 0);
             return;
         }
 
@@ -208,6 +211,9 @@ class FStickyContainer extends ViewGroup
                     item.layout(0, -item.getMeasuredHeight(), item.getMeasuredWidth(), 0);
                 }
             }
+
+            if (mIsDebug)
+                Log.i(getDebugTag(), "onLayout:" + item.getTop() + "," + item.getBottom() + " index:" + i);
         }
     }
 
