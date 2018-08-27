@@ -1,5 +1,6 @@
 package com.fanwe.lib.stickyview;
 
+import android.os.Build;
 import android.view.View;
 
 class Utils
@@ -24,5 +25,16 @@ class Utils
                 break;
         }
         return result;
+    }
+
+    public static boolean isViewAttached(View view)
+    {
+        if (view == null)
+            return false;
+
+        if (Build.VERSION.SDK_INT >= 19)
+            return view.isAttachedToWindow();
+        else
+            return view.getWindowToken() != null;
     }
 }

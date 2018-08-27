@@ -181,6 +181,9 @@ class FStickyContainer extends ViewGroup
 
         for (final FStickyWrapper item : mListWrapper)
         {
+            if (!Utils.isViewAttached(item))
+                continue;
+
             final View sticky = item.getSticky();
             if (sticky == null)
                 continue;
