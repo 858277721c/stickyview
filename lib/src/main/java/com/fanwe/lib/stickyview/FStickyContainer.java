@@ -181,39 +181,41 @@ class FStickyContainer extends ViewGroup
         if (count < 0)
             return;
 
-        if (count == 1)
+        if (count <= MAX_STICKY)
         {
-            final View child = getChildAt(0);
-            child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
-
-            if (mIsDebug)
-                Log.i(getDebugTag(), "onLayout:" + child.getTop() + "," + child.getBottom() + " index:" + 0);
-            return;
-        }
-
-        View lastChild = null;
-        for (int i = 0; i < count; i++)
-        {
-            final View item = getChildAt(i);
-            if (lastChild != null)
+            int top = 0;
+            for (int i = 0; i < count; i++)
             {
-                int top = lastChild.getBottom();
+                final View item = getChildAt(i);
                 item.layout(0, top, item.getMeasuredWidth(), top + item.getMeasuredHeight());
-                lastChild = item;
-            } else
+                top = item.getBottom();
+            }
+        } else
+        {
+            View lastChild = null;
+            for (int i = 0; i < count; i++)
             {
-                if (i == count - (MAX_STICKY + 1))
+                final View item = getChildAt(i);
+                if (lastChild != null)
                 {
-                    item.layout(0, item.getTop(), item.getMeasuredWidth(), item.getTop() + item.getMeasuredHeight());
+                    int top = lastChild.getBottom();
+                    item.layout(0, top, item.getMeasuredWidth(), top + item.getMeasuredHeight());
                     lastChild = item;
                 } else
                 {
-                    item.layout(0, -item.getMeasuredHeight(), item.getMeasuredWidth(), 0);
+                    if (i == count - (MAX_STICKY + 1))
+                    {
+                        item.layout(0, item.getTop(), item.getMeasuredWidth(), item.getTop() + item.getMeasuredHeight());
+                        lastChild = item;
+                    } else
+                    {
+                        item.layout(0, -item.getMeasuredHeight(), item.getMeasuredWidth(), 0);
+                    }
                 }
-            }
 
-            if (mIsDebug)
-                Log.i(getDebugTag(), "onLayout:" + item.getTop() + "," + item.getBottom() + " index:" + i);
+                if (mIsDebug)
+                    Log.i(getDebugTag(), "onLayout:" + item.getTop() + "," + item.getBottom() + " index:" + i);
+            }
         }
     }
 
