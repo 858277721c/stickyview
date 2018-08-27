@@ -174,7 +174,7 @@ class FStickyContainer extends ViewGroup
 
     public void performSticky()
     {
-        if (mListWrapper == null || mListWrapper.isEmpty())
+        if (mListWrapper.isEmpty())
             return;
 
         getLocationOnScreen(mLocation);
