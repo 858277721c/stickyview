@@ -13,12 +13,17 @@ import java.util.Map;
 
 class FStickyContainer extends ViewGroup
 {
+    private static final int MAX_STICKY = 1;
+
     private final int[] mLocation = new int[2];
     private final List<FStickyWrapper> mListWrapper = new ArrayList<>();
 
     private FStickyWrapper mTarget;
     private final Map<View, FStickyWrapper> mMapSticky = new HashMap<>();
 
+    private final List<View> mListChildrenLast = new ArrayList<>();
+
+    private int mMinYForTargetSticky;
     private int mMaxYForTargetSticky;
     private boolean mIsReadyToMove;
 
@@ -85,6 +90,7 @@ class FStickyContainer extends ViewGroup
 
         setReadyToMove(false);
         mMapSticky.remove(child);
+        mListChildrenLast.remove(child);
 
         final View lastChild = getChildAt(getChildCount() - 1);
         final FStickyWrapper target = lastChild == null ? null : mMapSticky.get(lastChild);
@@ -96,7 +102,7 @@ class FStickyContainer extends ViewGroup
     {
         mIsReadyToMove = readyToMove;
         if (mIsDebug)
-            Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (maxY:" + mMaxYForTargetSticky + ")") : ""));
+            Log.e(getDebugTag(), "setReadyToMove: " + readyToMove + (readyToMove ? (" (" + mMinYForTargetSticky + "," + mMaxYForTargetSticky + ")") : ""));
     }
 
     private void setTarget(FStickyWrapper target)
@@ -136,15 +142,31 @@ class FStickyContainer extends ViewGroup
 
         if (mTarget != null)
         {
-            final View preLastChild = getChildAt(count - 2);
-            if (preLastChild != null)
+            final View sticky = mTarget.getSticky();
+            if (sticky != null)
             {
-                mMaxYForTargetSticky = preLastChild.getMeasuredHeight();
-            } else
-            {
-                mMaxYForTargetSticky = 0;
+                mMinYForTargetSticky = sticky.getTop();
+                mMaxYForTargetSticky = sticky.getTop();
+
+                if (count > MAX_STICKY)
+                {
+                    final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
+                    if (list.size() != (MAX_STICKY + 1))
+                        throw new RuntimeException();
+
+                    int max = 0;
+                    for (int i = 0; i < list.size() - 1; i++)
+                    {
+                        final View item = list.get(i);
+                        max += item.getMeasuredHeight();
+                    }
+
+                    mMaxYForTargetSticky = max;
+                    mMinYForTargetSticky = max - list.get(0).getMeasuredHeight();
+                }
+
+                setReadyToMove(true);
             }
-            setReadyToMove(true);
         }
 
         width = Utils.getMeasureSize(width, widthMeasureSpec);
@@ -155,20 +177,37 @@ class FStickyContainer extends ViewGroup
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b)
     {
-        int top = 0;
-
         final int count = getChildCount();
+        if (count < 0)
+            return;
+
+        if (count == 1)
+        {
+            final View child = getChildAt(0);
+            child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+            return;
+        }
+
+        View lastChild = null;
         for (int i = 0; i < count; i++)
         {
-            final View child = getChildAt(i);
-            if (child.getVisibility() == GONE)
-                continue;
-
-            if (i == 0)
-                top = child.getTop();
-
-            child.layout(0, top, child.getMeasuredWidth(), top + child.getMeasuredHeight());
-            top = child.getBottom();
+            final View item = getChildAt(i);
+            if (lastChild != null)
+            {
+                int top = lastChild.getBottom();
+                item.layout(0, top, item.getMeasuredWidth(), top + item.getMeasuredHeight());
+                lastChild = item;
+            } else
+            {
+                if (i == count - (MAX_STICKY + 1))
+                {
+                    item.layout(0, item.getTop(), item.getMeasuredWidth(), item.getTop() + item.getMeasuredHeight());
+                    lastChild = item;
+                } else
+                {
+                    item.layout(0, -item.getMeasuredHeight(), item.getMeasuredWidth(), 0);
+                }
+            }
         }
     }
 
@@ -241,7 +280,8 @@ class FStickyContainer extends ViewGroup
         if (delta == 0)
             return;
 
-        final int legalDelta = getLegalDelta(targetSticky.getTop(), 0, mMaxYForTargetSticky, delta);
+        final int currentTop = targetSticky.getTop();
+        final int legalDelta = getLegalDelta(currentTop, mMinYForTargetSticky, mMaxYForTargetSticky, delta);
         if (legalDelta == 0)
         {
             // 已经不能拖动，检查是否需要移除Sticky
@@ -280,11 +320,35 @@ class FStickyContainer extends ViewGroup
 
     private void offsetChildren(int delta)
     {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++)
+        final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
+        for (View item : list)
         {
-            getChildAt(i).offsetTopAndBottom(delta);
+            item.offsetTopAndBottom(delta);
         }
+    }
+
+    private List<View> getChildrenFromLast(int count)
+    {
+        mListChildrenLast.clear();
+
+        final int childCount = getChildCount();
+        if (count > 0 && childCount > 0)
+        {
+            int start = childCount - count;
+            if (start < 0)
+                start = 0;
+
+            for (int i = start; i < childCount; i++)
+            {
+                final View child = getChildAt(i);
+                if (child == null)
+                    throw new NullPointerException();
+
+                mListChildrenLast.add(child);
+            }
+        }
+
+        return mListChildrenLast;
     }
 
     private static void addViewTo(View child, ViewGroup parent)
