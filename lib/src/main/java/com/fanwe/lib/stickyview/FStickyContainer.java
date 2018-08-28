@@ -95,17 +95,6 @@ class FStickyContainer extends ViewGroup
         setTarget(target);
     }
 
-    private void setReadyToMove(boolean readyToMove)
-    {
-        if (mIsReadyToMove != readyToMove)
-        {
-            mIsReadyToMove = readyToMove;
-
-            if (mIsDebug)
-                Log.e(getDebugTag(), "setReadyToMove:" + readyToMove);
-        }
-    }
-
     private void setTarget(FStickyWrapper target)
     {
         if (mTarget != target)
@@ -145,7 +134,7 @@ class FStickyContainer extends ViewGroup
         height = Utils.getMeasureSize(height, heightMeasureSpec);
         setMeasuredDimension(width, height);
 
-        setReadyToMove(false);
+        mIsReadyToMove = false;
         if (mTarget != null && mTarget.getSticky() != null)
         {
             if (count > mMaxStickyCount)
@@ -164,10 +153,10 @@ class FStickyContainer extends ViewGroup
                 mMaxYForTargetSticky = max;
                 mMinYForTargetSticky = max - list.get(0).getMeasuredHeight();
 
-                setReadyToMove(true);
+                mIsReadyToMove = true;
 
                 if (mIsDebug)
-                    Log.i(getDebugTag(), "sticky move bound:" + mMinYForTargetSticky + "," + mMaxYForTargetSticky);
+                    Log.e(getDebugTag(), "Ready to move bound:" + mMinYForTargetSticky + "," + mMaxYForTargetSticky);
             }
         }
     }
