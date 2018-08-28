@@ -71,6 +71,14 @@ class FStickyContainer extends ViewGroup
         }
     }
 
+    public void setMaxStickyCount(int count)
+    {
+        if (count <= 0)
+            throw new IllegalArgumentException("count is out of range (count > 0)");
+
+        mMaxStickyCount = count;
+    }
+
     @Override
     public void onViewAdded(View child)
     {

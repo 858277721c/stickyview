@@ -64,6 +64,16 @@ public class FStickyLayout extends FrameLayout
     }
 
     /**
+     * 设置显示粘在顶部的最大数量，默认显示1个
+     *
+     * @param count
+     */
+    public void setMaxStickyCount(int count)
+    {
+        mStickyContainer.setMaxStickyCount(count);
+    }
+
+    /**
      * 添加当前对象下的所有Sticky
      */
     public void findAllStickyWrapper()
