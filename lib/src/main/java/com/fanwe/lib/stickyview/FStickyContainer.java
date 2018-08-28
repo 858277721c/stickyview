@@ -182,6 +182,9 @@ class FStickyContainer extends ViewGroup
                 final View item = getChildAt(i);
                 item.layout(0, top, item.getMeasuredWidth(), top + item.getMeasuredHeight());
                 top = item.getBottom();
+
+                if (mIsDebug)
+                    Log.i(getDebugTag(), "onLayout order:" + item.getTop() + "," + item.getBottom() + " index:" + i);
             }
         } else
         {
