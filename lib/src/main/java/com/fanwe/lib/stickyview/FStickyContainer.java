@@ -140,30 +140,23 @@ class FStickyContainer extends ViewGroup
             height += child.getMeasuredHeight();
         }
 
-        if (mTarget != null)
+        if (mTarget != null && mTarget.getSticky() != null)
         {
-            final View sticky = mTarget.getSticky();
-            if (sticky != null)
+            if (count > MAX_STICKY)
             {
-                mMinYForTargetSticky = sticky.getTop();
-                mMaxYForTargetSticky = sticky.getTop();
+                final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
+                if (list.size() != (MAX_STICKY + 1))
+                    throw new RuntimeException();
 
-                if (count > MAX_STICKY)
+                int max = 0;
+                for (int i = 0; i < list.size() - 1; i++)
                 {
-                    final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
-                    if (list.size() != (MAX_STICKY + 1))
-                        throw new RuntimeException();
-
-                    int max = 0;
-                    for (int i = 0; i < list.size() - 1; i++)
-                    {
-                        final View item = list.get(i);
-                        max += item.getMeasuredHeight();
-                    }
-
-                    mMaxYForTargetSticky = max;
-                    mMinYForTargetSticky = max - list.get(0).getMeasuredHeight();
+                    final View item = list.get(i);
+                    max += item.getMeasuredHeight();
                 }
+
+                mMaxYForTargetSticky = max;
+                mMinYForTargetSticky = max - list.get(0).getMeasuredHeight();
 
                 setReadyToMove(true);
             }
@@ -273,9 +266,6 @@ class FStickyContainer extends ViewGroup
 
     private void moveViews()
     {
-        if (!mIsReadyToMove)
-            return;
-
         final FStickyWrapper target = mTarget;
         if (target == null)
             return;
@@ -288,28 +278,32 @@ class FStickyContainer extends ViewGroup
         if (delta == 0)
             return;
 
-        final int currentTop = targetSticky.getTop();
-        final int legalDelta = getLegalDelta(currentTop, mMinYForTargetSticky, mMaxYForTargetSticky, delta);
-        if (legalDelta == 0)
+        if (mIsReadyToMove)
         {
-            // 已经不能拖动，检查是否需要移除
-            detachIfNeed(delta, target, targetSticky);
-            return;
-        }
-
-        boolean offset = false;
-        if (legalDelta < 0)
-            offset = target.getLocation() < getBoundSticky(false);
-        else
-            offset = target.getLocation() > getBoundSticky(false);
-
-        if (offset)
-        {
-            final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
-            for (View item : list)
+            final int legalDelta = getLegalDelta(targetSticky.getTop(), mMinYForTargetSticky, mMaxYForTargetSticky, delta);
+            if (legalDelta == 0)
             {
-                item.offsetTopAndBottom(legalDelta);
+                // 已经不能拖动，检查是否需要移除
+                detachIfNeed(delta, target, targetSticky);
+                return;
             }
+
+            final int location = target.getLocation();
+            final int bound = getBoundSticky(false);
+
+            final boolean offset = legalDelta < 0 ? location < bound : location > bound;
+
+            if (offset)
+            {
+                final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
+                for (View item : list)
+                {
+                    item.offsetTopAndBottom(legalDelta);
+                }
+            }
+        } else
+        {
+            detachIfNeed(delta, target, targetSticky);
         }
     }
 
