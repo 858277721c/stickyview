@@ -75,7 +75,7 @@ public class RecyclerViewActivity extends AppCompatActivity
             Button btn_sticky = sticky_wrapper.getSticky().findViewById(R.id.btn_sticky);
             btn_sticky.setText(model.toString());
 
-            mStickyLayout.addSticky(sticky_wrapper);
+            mStickyLayout.addStickyWrapper(sticky_wrapper);
         }
     };
 

@@ -48,7 +48,7 @@ public class FStickyLayout extends FrameLayout
      *
      * @param wrapper
      */
-    public void addSticky(FStickyWrapper wrapper)
+    public void addStickyWrapper(FStickyWrapper wrapper)
     {
         mStickyContainer.addStickyWrapper(wrapper);
     }
@@ -58,7 +58,7 @@ public class FStickyLayout extends FrameLayout
      *
      * @param wrapper
      */
-    public void removeSticky(FStickyWrapper wrapper)
+    public void removeStickyWrapper(FStickyWrapper wrapper)
     {
         mStickyContainer.removeStickyWrapper(wrapper);
     }
@@ -66,7 +66,7 @@ public class FStickyLayout extends FrameLayout
     /**
      * 添加当前对象下的所有Sticky
      */
-    public void findAllSticky()
+    public void findAllStickyWrapper()
     {
         final View child = getChildAt(0);
         if (child == null)
@@ -75,7 +75,7 @@ public class FStickyLayout extends FrameLayout
         final List<FStickyWrapper> listWrapper = getAllWrapper(child);
         for (FStickyWrapper item : listWrapper)
         {
-            addSticky(item);
+            addStickyWrapper(item);
         }
     }
 
@@ -90,7 +90,7 @@ public class FStickyLayout extends FrameLayout
         {
             addView(mStickyContainer);
             if (mAutoFind)
-                findAllSticky();
+                findAllStickyWrapper();
         }
     }
 
