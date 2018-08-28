@@ -219,6 +219,16 @@ class FStickyContainer extends ViewGroup
         }
     }
 
+    private int getBoundSticky(boolean bottom)
+    {
+        final int count = getChildCount();
+        if (count <= 0)
+            return mLocation[1];
+
+        final View lastChild = getChildAt(count - 1);
+        return mLocation[1] + (bottom ? lastChild.getBottom() : lastChild.getTop());
+    }
+
     public void performSticky()
     {
         if (mListWrapper.isEmpty())
@@ -261,16 +271,6 @@ class FStickyContainer extends ViewGroup
         moveViews();
     }
 
-    private int getBoundSticky(boolean bottom)
-    {
-        final int count = getChildCount();
-        if (count <= 0)
-            return mLocation[1];
-
-        final View lastChild = getChildAt(count - 1);
-        return mLocation[1] + (bottom ? lastChild.getBottom() : lastChild.getTop());
-    }
-
     private void moveViews()
     {
         if (!mIsReadyToMove)
@@ -292,27 +292,8 @@ class FStickyContainer extends ViewGroup
         final int legalDelta = getLegalDelta(currentTop, mMinYForTargetSticky, mMaxYForTargetSticky, delta);
         if (legalDelta == 0)
         {
-            // 已经不能拖动，检查是否需要移除Sticky
-            if (delta > 0)
-            {
-                final int location = target.getLocation();
-                final int bound = getBoundSticky(false);
-                if (location > bound)
-                {
-                    if (mIsDebug)
-                        Log.i(getDebugTag(), "try remove child:" + location + "," + bound + " " + targetSticky);
-
-                    post(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            addViewTo(targetSticky, target);
-                        }
-                    });
-                }
-            }
-
+            // 已经不能拖动，检查是否需要移除
+            detachIfNeed(delta, target, targetSticky);
             return;
         }
 
@@ -323,15 +304,35 @@ class FStickyContainer extends ViewGroup
             offset = target.getLocation() > getBoundSticky(false);
 
         if (offset)
-            offsetChildren(legalDelta);
+        {
+            final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
+            for (View item : list)
+            {
+                item.offsetTopAndBottom(legalDelta);
+            }
+        }
     }
 
-    private void offsetChildren(int delta)
+    private void detachIfNeed(int delta, final FStickyWrapper target, final View targetSticky)
     {
-        final List<View> list = getChildrenFromLast(MAX_STICKY + 1);
-        for (View item : list)
+        if (delta > 0)
         {
-            item.offsetTopAndBottom(delta);
+            final int location = target.getLocation();
+            final int bound = getBoundSticky(false);
+            if (location > bound)
+            {
+                if (mIsDebug)
+                    Log.i(getDebugTag(), "try remove child:" + location + "," + bound + " " + targetSticky);
+
+                post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        addViewTo(targetSticky, target);
+                    }
+                });
+            }
         }
     }
 
