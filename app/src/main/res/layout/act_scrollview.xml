@@ -42,7 +42,7 @@
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:background="@color/colorAccent"
                     android:text="sticky2" />
 
@@ -74,7 +74,7 @@
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:background="@color/colorAccent"
                     android:text="sticky4" />
 
@@ -93,6 +93,38 @@
                     android:layout_height="50dp"
                     android:background="@color/colorAccent"
                     android:text="sticky5" />
+
+            </com.fanwe.lib.stickyview.FStickyWrapper>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+
+            <com.fanwe.lib.stickyview.FStickyWrapper
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@color/colorAccent"
+                    android:text="sticky6" />
+
+            </com.fanwe.lib.stickyview.FStickyWrapper>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+
+            <com.fanwe.lib.stickyview.FStickyWrapper
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorAccent"
+                    android:text="sticky7" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
