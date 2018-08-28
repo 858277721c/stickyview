@@ -28,7 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorAccent"
-                    android:text="sticky1" />
+                    android:text="0" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:background="@color/colorAccent"
-                    android:text="sticky2" />
+                    android:text="1" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
@@ -60,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorAccent"
-                    android:text="sticky3" />
+                    android:text="2" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
@@ -76,7 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:background="@color/colorAccent"
-                    android:text="sticky4" />
+                    android:text="3" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
@@ -92,7 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorAccent"
-                    android:text="sticky5" />
+                    android:text="4" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
@@ -108,7 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:background="@color/colorAccent"
-                    android:text="sticky6" />
+                    android:text="5" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
@@ -124,7 +124,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorAccent"
-                    android:text="sticky7" />
+                    android:text="6" />
+
+            </com.fanwe.lib.stickyview.FStickyWrapper>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+
+            <com.fanwe.lib.stickyview.FStickyWrapper
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorAccent"
+                    android:text="7" />
 
             </com.fanwe.lib.stickyview.FStickyWrapper>
 
