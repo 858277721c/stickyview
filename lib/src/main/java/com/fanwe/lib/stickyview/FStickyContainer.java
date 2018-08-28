@@ -199,10 +199,14 @@ class FStickyContainer extends ViewGroup
                     lastChild = item;
                 } else
                 {
-                    if (i == count - (MAX_STICKY + 1))
+                    final int targetIndex = count - (MAX_STICKY + 1);
+                    if (i == targetIndex)
                     {
                         item.layout(0, item.getTop(), item.getMeasuredWidth(), item.getTop() + item.getMeasuredHeight());
                         lastChild = item;
+
+                        if (mIsDebug)
+                            Log.i(getDebugTag(), "onLayout found target index:" + i);
                     } else
                     {
                         item.layout(0, -item.getMeasuredHeight(), item.getMeasuredWidth(), 0);
