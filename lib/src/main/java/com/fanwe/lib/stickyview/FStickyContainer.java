@@ -23,6 +23,9 @@ class FStickyContainer extends ViewGroup
 
     private final List<View> mListChildrenLast = new ArrayList<>();
 
+    private final Map<FStickyWrapper, Runnable> mAttachRunnable = new HashMap<>();
+    private final Map<FStickyWrapper, Runnable> mDetachRunnable = new HashMap<>();
+
     private int mMinYForTargetSticky;
     private int mMaxYForTargetSticky;
     private boolean mIsReadyToMove;
@@ -61,6 +64,9 @@ class FStickyContainer extends ViewGroup
 
         if (mListWrapper.remove(wrapper))
         {
+            removeCallbacks(mAttachRunnable.remove(wrapper));
+            removeCallbacks(mDetachRunnable.remove(wrapper));
+
             final View sticky = wrapper.getSticky();
             final int index = indexOfChild(sticky);
             if (index >= 0)
@@ -254,15 +260,7 @@ class FStickyContainer extends ViewGroup
                 final int bound = getBoundSticky(true);
                 if (location <= bound)
                 {
-                    post(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            addViewTo(sticky, FStickyContainer.this);
-                            setTarget(item);
-                        }
-                    });
+                    attachSticky(item, sticky);
                 }
             }
         }
@@ -321,16 +319,46 @@ class FStickyContainer extends ViewGroup
             final int bound = getBoundSticky(false);
             if (location > bound)
             {
-                post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        addViewTo(targetSticky, target);
-                    }
-                });
+                detachSticky(target, targetSticky);
             }
         }
+    }
+
+    private void attachSticky(final FStickyWrapper wrapper, final View sticky)
+    {
+        removeCallbacks(mAttachRunnable.remove(wrapper));
+
+        final Runnable runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mAttachRunnable.remove(wrapper);
+                addViewTo(sticky, FStickyContainer.this);
+                setTarget(wrapper);
+            }
+        };
+
+        mAttachRunnable.put(wrapper, runnable);
+        post(runnable);
+    }
+
+    private void detachSticky(final FStickyWrapper wrapper, final View sticky)
+    {
+        removeCallbacks(mDetachRunnable.remove(wrapper));
+
+        final Runnable runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mDetachRunnable.remove(wrapper);
+                addViewTo(sticky, wrapper);
+            }
+        };
+
+        mDetachRunnable.put(wrapper, runnable);
+        post(runnable);
     }
 
     private List<View> getChildrenFromLast(int count)
