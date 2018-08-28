@@ -3,6 +3,7 @@
 
 # 简单效果
 ![](https://raw.githubusercontent.com/zj565061763/stickyview/master/screenshot/stickyview.gif)
+![](https://raw.githubusercontent.com/zj565061763/stickyview/master/screenshot/stickyview1.gif)
 
 # 简单使用
 ```xml
