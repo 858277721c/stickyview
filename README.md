@@ -71,17 +71,24 @@ public void setDebug(boolean debug);
  *
  * @param wrapper
  */
-public void addSticky(FStickyWrapper wrapper);
+public void addStickyWrapper(FStickyWrapper wrapper)
 
 /**
  * 移除Sticky
  *
  * @param wrapper
  */
-public void removeSticky(FStickyWrapper wrapper);
+public void removeStickyWrapper(FStickyWrapper wrapper)
+
+/**
+ * 设置显示粘在顶部的最大数量，默认显示1个
+ *
+ * @param count
+ */
+public void setMaxStickyCount(int count)
 
 /**
  * 添加当前对象下的所有Sticky
  */
-public void findAllSticky();
+public void findAllStickyWrapper()
 ```
