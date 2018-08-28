@@ -246,9 +246,6 @@ class FStickyContainer extends ViewGroup
                 final int bound = getBoundSticky(true);
                 if (location <= bound)
                 {
-                    if (mIsDebug)
-                        Log.i(getDebugTag(), "try add sticky:" + location + "," + bound + " " + sticky);
-
                     post(new Runnable()
                     {
                         @Override
@@ -316,9 +313,6 @@ class FStickyContainer extends ViewGroup
             final int bound = getBoundSticky(false);
             if (location > bound)
             {
-                if (mIsDebug)
-                    Log.i(getDebugTag(), "try remove child:" + location + "," + bound + " " + targetSticky);
-
                 post(new Runnable()
                 {
                     @Override
