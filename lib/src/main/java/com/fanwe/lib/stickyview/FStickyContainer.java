@@ -179,51 +179,19 @@ class FStickyContainer extends ViewGroup
     protected void onLayout(boolean changed, int l, int t, int r, int b)
     {
         final int count = getChildCount();
-        if (count < 0)
-            return;
-
-        if (count <= mMaxStickyCount)
+        int top = 0;
+        for (int i = 0; i < count; i++)
         {
-            int top = 0;
-            for (int i = 0; i < count; i++)
-            {
-                final View item = getChildAt(i);
-                item.layout(0, top, item.getMeasuredWidth(), top + item.getMeasuredHeight());
-                top = item.getBottom();
+            final View item = getChildAt(i);
 
-                if (mIsDebug)
-                    Log.i(getDebugTag(), "onLayout order:" + item.getTop() + "," + item.getBottom() + " index:" + i);
-            }
-        } else
-        {
-            View lastChild = null;
-            for (int i = 0; i < count; i++)
-            {
-                final View item = getChildAt(i);
-                if (lastChild != null)
-                {
-                    int top = lastChild.getBottom();
-                    item.layout(0, top, item.getMeasuredWidth(), top + item.getMeasuredHeight());
-                    lastChild = item;
-                } else
-                {
-                    final int targetIndex = count - (mMaxStickyCount + 1);
-                    if (i == targetIndex)
-                    {
-                        item.layout(0, item.getTop(), item.getMeasuredWidth(), item.getTop() + item.getMeasuredHeight());
-                        lastChild = item;
+            if (i == 0)
+                top = item.getTop();
 
-                        if (mIsDebug)
-                            Log.i(getDebugTag(), "onLayout found target index:" + i);
-                    } else
-                    {
-                        item.layout(0, -item.getMeasuredHeight(), item.getMeasuredWidth(), 0);
-                    }
-                }
+            item.layout(0, top, item.getMeasuredWidth(), top + item.getMeasuredHeight());
+            top = item.getBottom();
 
-                if (mIsDebug)
-                    Log.i(getDebugTag(), "onLayout:" + item.getTop() + "," + item.getBottom() + " index:" + i);
-            }
+            if (mIsDebug)
+                Log.i(getDebugTag(), "onLayout order:" + item.getTop() + "," + item.getBottom() + " index:" + i);
         }
     }
 
@@ -299,10 +267,10 @@ class FStickyContainer extends ViewGroup
 
             if (offset)
             {
-                final List<View> list = getChildrenFromLast(mMaxStickyCount + 1);
-                for (View item : list)
+                final int count = getChildCount();
+                for (int i = 0; i < count; i++)
                 {
-                    item.offsetTopAndBottom(legalDelta);
+                    getChildAt(i).offsetTopAndBottom(legalDelta);
                 }
             }
         } else
