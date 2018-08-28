@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
@@ -70,6 +71,8 @@ public class RecyclerViewActivity extends AppCompatActivity
                 sticky_wrapper = (FStickyWrapper) LayoutInflater.from(getContext()).inflate(R.layout.item_sticky, fl_content, false);
                 mMapWrapper.put(model, sticky_wrapper);
             }
+
+            removeViewFromParent(sticky_wrapper);
             fl_content.addView(sticky_wrapper);
 
             Button btn_sticky = sticky_wrapper.getSticky().findViewById(R.id.btn_sticky);
@@ -78,5 +81,19 @@ public class RecyclerViewActivity extends AppCompatActivity
             mStickyLayout.addStickyWrapper(sticky_wrapper);
         }
     };
+
+    private static void removeViewFromParent(View view)
+    {
+        if (view == null)
+            return;
+        if (view.getParent() == null)
+            return;
+        try
+        {
+            ((ViewGroup) view.getParent()).removeView(view);
+        } catch (Exception e)
+        {
+        }
+    }
 
 }
