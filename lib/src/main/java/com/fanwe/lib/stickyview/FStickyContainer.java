@@ -244,16 +244,15 @@ class FStickyContainer extends ViewGroup
             return;
 
         final int delta = target.updateLocation();
-        if (delta == 0)
-            return;
 
         if (mIsReadyToMove)
         {
             final int legalDelta = getLegalDelta(targetSticky.getTop(), mMinYForTargetSticky, mMaxYForTargetSticky, delta);
+
             if (legalDelta == 0)
             {
                 // 已经不能拖动，检查是否需要移除
-                detachIfNeed(delta, target, targetSticky);
+                detachIfNeed(target, targetSticky);
                 return;
             }
 
@@ -272,20 +271,17 @@ class FStickyContainer extends ViewGroup
             }
         } else
         {
-            detachIfNeed(delta, target, targetSticky);
+            detachIfNeed(target, targetSticky);
         }
     }
 
-    private void detachIfNeed(int delta, final FStickyWrapper target, final View targetSticky)
+    private void detachIfNeed(final FStickyWrapper target, final View targetSticky)
     {
-        if (delta > 0)
+        final int location = target.getLocation();
+        final int bound = getBoundSticky(false);
+        if (location > bound)
         {
-            final int location = target.getLocation();
-            final int bound = getBoundSticky(false);
-            if (location > bound)
-            {
-                detachSticky(target, targetSticky);
-            }
+            detachSticky(target, targetSticky);
         }
     }
 
