@@ -21,8 +21,6 @@ class FStickyContainer extends ViewGroup
     private FStickyWrapper mTarget;
     private final Map<View, FStickyWrapper> mMapSticky = new HashMap<>();
 
-    private final List<View> mListChildrenLast = new ArrayList<>();
-
     private final Map<FStickyWrapper, Runnable> mAttachRunnable = new HashMap<>();
     private final Map<FStickyWrapper, Runnable> mDetachRunnable = new HashMap<>();
 
@@ -101,7 +99,6 @@ class FStickyContainer extends ViewGroup
             Log.i(getDebugTag(), "onViewRemoved: " + child + " count:" + getChildCount());
 
         mMapSticky.remove(child);
-        mListChildrenLast.remove(child);
 
         final View lastChild = getChildAt(getChildCount() - 1);
         final FStickyWrapper target = lastChild == null ? null : mMapSticky.get(lastChild);
@@ -149,7 +146,7 @@ class FStickyContainer extends ViewGroup
         setMeasuredDimension(width, height);
 
         mIsReadyToMove = false;
-        if (mTarget != null && mTarget.getSticky() != null)
+        if (mTarget != null && mTarget.getSticky() != null && count > 0)
         {
             if (count > mMaxStickyCount)
             {
@@ -333,7 +330,7 @@ class FStickyContainer extends ViewGroup
 
     private List<View> getChildrenFromLast(int count)
     {
-        mListChildrenLast.clear();
+        final List<View> list = new ArrayList<>(count);
 
         final int childCount = getChildCount();
         if (count > 0 && childCount > 0)
@@ -344,15 +341,11 @@ class FStickyContainer extends ViewGroup
 
             for (int i = start; i < childCount; i++)
             {
-                final View child = getChildAt(i);
-                if (child == null)
-                    throw new NullPointerException();
-
-                mListChildrenLast.add(child);
+                list.add(getChildAt(i));
             }
         }
 
-        return mListChildrenLast;
+        return list;
     }
 
     private static void addViewTo(View child, ViewGroup parent)
