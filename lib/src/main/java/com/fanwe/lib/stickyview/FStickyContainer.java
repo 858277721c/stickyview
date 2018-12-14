@@ -294,16 +294,17 @@ class FStickyContainer extends ViewGroup
 
     private void attachSticky(final FStickyWrapper wrapper, final View sticky)
     {
-        removeCallbacks(mAttachRunnable.remove(wrapper));
+        if (mAttachRunnable.containsKey(wrapper))
+            return;
 
         final Runnable runnable = new Runnable()
         {
             @Override
             public void run()
             {
-                mAttachRunnable.remove(wrapper);
                 addViewTo(sticky, FStickyContainer.this);
                 setTarget(wrapper);
+                mAttachRunnable.remove(wrapper);
             }
         };
 
@@ -313,15 +314,16 @@ class FStickyContainer extends ViewGroup
 
     private void detachSticky(final FStickyWrapper wrapper, final View sticky)
     {
-        removeCallbacks(mDetachRunnable.remove(wrapper));
+        if (mDetachRunnable.containsKey(wrapper))
+            return;
 
         final Runnable runnable = new Runnable()
         {
             @Override
             public void run()
             {
-                mDetachRunnable.remove(wrapper);
                 addViewTo(sticky, wrapper);
+                mDetachRunnable.remove(wrapper);
             }
         };
 
